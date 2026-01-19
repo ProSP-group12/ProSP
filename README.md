@@ -1,9 +1,37 @@
-# Stock Data Platform
+# 📷 WordCam
 
-This project is a stock market data platform designed to help users explore, compare, and discuss stock-related information efficiently. It also integrates a RAG (Retrieval-Augmented Generation) model to provide intelligent, data-driven insights and answer user queries based on up-to-date stock information.
+WordCam is a **mobile-first vocabulary learning app** built with **Cursor** and **Chat gpt**.  
+It helps users learn English vocabulary by using their phone camera to recognize real-world objects.
 
-## Key Features
-- Provides multi-dimensional stock data, including prices, financial indicators, and market performance
-- Enables horizontal comparison across different stocks and metrics
-- Includes an interactive discussion forum where users can share insights and exchange views on market trends
-- Leverages a RAG model to answer user questions intelligently and assist in decision-making based on the latest market data
+By combining **multimodal AI**, image recognition, and language generation, WordCam turns everyday scenes into interactive vocabulary lessons.
+
+---
+
+## ✨ Features
+
+- 📸 Camera-based object recognition  
+- 🧠 AI-powered vocabulary generation (Cursor)  
+- 📱 Optimized for mobile devices  
+- 🌍 Learn words from real-life environments  
+- 🖼️ Best experience in **landscape mode**
+
+---
+
+## 🎯 Motivation
+
+Traditional vocabulary learning apps focus on memorization.  
+WordCam connects language learning with daily life, making vocabulary acquisition more natural, visual, and engaging.
+
+---
+
+## 🛠️ Tech Stack
+
+- Cursor 
+- Mobile-first UI design  
+
+---
+
+
+## 📌 Project Status
+
+This project is currently a **prototype**, exploring the use of multimodal AI for educational applications.
