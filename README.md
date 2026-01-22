@@ -2,7 +2,7 @@
 
 Image-based object and scene recognition for vocabulary extraction. The system is divided into multiple functional branches, each leveraging a different AI capability.
 
-An AI-enhanced Wordcap-style mobile vocabulary learning application designed to help users save, understand, and effectively review vocabulary through intelligent AI support and modern mobile technologies.
+In addition to the product itself, this project investigates and compares different AI-assisted development workflows, focusing on tools such as VS Code AI, Cursor, and Google AI Studio, and evaluates their impact on development efficiency and developer experience.
 
 
 ## Project Outcome
