@@ -80,7 +80,7 @@ export function VocabularyScreen({ vocabulary, onClear }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B0F17',
+    backgroundColor: '#FFFFFF',
     padding: 16
   },
   headerRow: {
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   emptyText: {
-    color: '#9FB2D1',
+    color: '#333333',
     fontSize: 16,
     fontWeight: '600'
   },
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     gap: 12
   },
   word: {
-    color: '#E8EEF8',
+    color: '#000000',
     fontSize: 20,
     fontWeight: '800'
   },
@@ -127,13 +127,13 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
   zh: {
-    color: '#B6CCF2',
+    color: '#333333',
     fontSize: 16,
     fontWeight: '700'
   },
   meta: {
     marginTop: 6,
-    color: '#9FB2D1',
+    color: '#666666',
     fontSize: 12,
     fontWeight: '600'
   }

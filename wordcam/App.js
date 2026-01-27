@@ -66,11 +66,11 @@ export default function App() {
       ...DefaultTheme,
       colors: {
         ...DefaultTheme.colors,
-        background: '#0B0F17',
-        card: '#0F1629',
-        text: '#E8EEF8',
-        border: '#1E2A44',
-        primary: '#6EA8FF',
+        background: '#FFFFFF',
+        card: '#FFFFFF',
+        text: '#000000',
+        border: '#FFD700',
+        primary: '#FFD700',
       },
     }),
     []
@@ -90,7 +90,7 @@ export default function App() {
               paddingBottom: Platform.select({ ios: 24, default: 10 }),
             },
             tabBarActiveTintColor: theme.colors.primary,
-            tabBarInactiveTintColor: '#9FB2D1',
+            tabBarInactiveTintColor: '#333333',
           }}
         >
           <Tab.Screen name="Camera" options={{ title: t('tabs.camera') }}>
@@ -118,7 +118,7 @@ export default function App() {
           </Tab.Screen>
         </Tab.Navigator>
       </NavigationContainer>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
     </View>
   );
 }
@@ -126,6 +126,6 @@ export default function App() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#0B0F17',
+    backgroundColor: '#FFFFFF',
   },
 });

@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   container: {
     flex: 1,
-    backgroundColor: '#0B0F17',
+    backgroundColor: '#FFFFFF',
     padding: 16
   },
   top: {
@@ -151,8 +151,8 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#1E2A44',
-    backgroundColor: '#05070C'
+    borderColor: '#FFD700',
+    backgroundColor: '#FFFFFF'
   },
   camera: {
     flex: 1
@@ -169,18 +169,18 @@ const styles = StyleSheet.create({
     gap: 10
   },
   resultText: {
-    color: '#E8EEF8',
+    color: '#000000',
     fontSize: 16,
     fontWeight: '700'
   },
   resultLabel: {
-    color: '#9FB2D1',
+    color: '#333333',
     fontSize: 12,
     fontWeight: '700',
     textTransform: 'uppercase'
   },
   resultTitle: {
-    color: '#E8EEF8',
+    color: '#000000',
     fontSize: 20,
     fontWeight: '800',
     marginTop: 6

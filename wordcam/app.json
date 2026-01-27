@@ -30,6 +30,9 @@
     },
     "plugins": [
       "expo-localization"
-    ]
+    ],
+    "extra": {
+      "DETECT_API_URL": "http://10.127.16.14:4000/detect-good"
+    }
   }
 }

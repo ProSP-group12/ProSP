@@ -38,19 +38,19 @@ export function SubTitle({ children, style }) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#0F1629',
-    borderColor: '#1E2A44',
+    backgroundColor: '#FFFFFF',
+    borderColor: '#FFD700',
     borderWidth: 1,
     borderRadius: 16,
     padding: 16,
   },
   title: {
-    color: '#E8EEF8',
+    color: '#000000',
     fontSize: 20,
     fontWeight: '700',
   },
   subtitle: {
-    color: '#9FB2D1',
+    color: '#333333',
     fontSize: 14,
     marginTop: 6,
   },
@@ -62,11 +62,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   primary: {
-    backgroundColor: '#6EA8FF',
+    backgroundColor: '#FFD700',
   },
   secondary: {
-    backgroundColor: '#17233D',
-    borderColor: '#243557',
+    backgroundColor: '#FFFFFF',
+    borderColor: '#FFD700',
     borderWidth: 1,
   },
   disabled: {
@@ -81,10 +81,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   textPrimary: {
-    color: '#071224',
+    color: '#000000',
   },
   textSecondary: {
-    color: '#E8EEF8',
+    color: '#000000',
   },
 });
 

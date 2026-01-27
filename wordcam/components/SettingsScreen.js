@@ -26,7 +26,6 @@ export function SettingsScreen() {
     <View style={styles.container}>
       <Card>
         <Title>{t('settings.title')}</Title>
-        <SubTitle>{t('settings.note')}</SubTitle>
 
         <View style={{ height: 18 }} />
 
@@ -62,17 +61,17 @@ export function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B0F17',
+    backgroundColor: '#FFFFFF',
     padding: 16
   },
   label: {
-    color: '#9FB2D1',
+    color: '#333333',
     fontSize: 12,
     fontWeight: '800',
     textTransform: 'uppercase'
   },
   value: {
-    color: '#E8EEF8',
+    color: '#000000',
     fontSize: 18,
     fontWeight: '800',
     marginTop: 6
