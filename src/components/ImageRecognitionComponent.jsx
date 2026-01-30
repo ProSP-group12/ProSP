@@ -7,10 +7,9 @@ import {
   ActivityIndicator,
   ScrollView,
 } from 'react-native';
-import { launchCamera } from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { sendToImageRecognitionAPI } from '../services/imageRecognitionAPI';
 import { styles } from '../styles/imageRecognitionStyles';
-import { CAMERA_CONFIG } from '../constants/config';
 
 const ImageRecognitionComponent = () => {
   const [photo, setPhoto] = useState(null);
@@ -19,17 +18,32 @@ const ImageRecognitionComponent = () => {
   const [error, setError] = useState(null);
 
   // Handle taking a photo
-  const handleTakePhoto = () => {
-    launchCamera(CAMERA_CONFIG, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled photo');
-      } else if (response.errorCode) {
-        setError('Photo capture failed: ' + response.errorMessage);
-      } else {
-        setPhoto(response.assets[0]);
-        handleImageRecognition(response.assets[0]);
-      }
+  const handleTakePhoto = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    
+    if (!permissionResult.granted) {
+      setError('Camera permission is required');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.8,
     });
+
+    if (!result.canceled) {
+      const imageAsset = {
+        uri: result.assets[0].uri,
+        type: 'image/jpeg',
+        fileName: 'photo.jpg',
+      };
+      setPhoto(imageAsset);
+      handleImageRecognition(imageAsset);
+    } else {
+      console.log('User cancelled photo');
+    }
   };
 
   // Handle image recognition

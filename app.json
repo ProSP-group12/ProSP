@@ -1,4 +1,42 @@
 {
-  "name": "ImageRecognitionApp",
-  "displayName": "ImageRecognitionApp"
+  "expo": {
+    "name": "ImageRecognitionApp",
+    "slug": "image-recognition-app",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTabletMode": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Camera permission needed for image recognition"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Photos permission needed",
+          "cameraPermission": "Camera permission needed"
+        }
+      ]
+    ]
+  }
 }
