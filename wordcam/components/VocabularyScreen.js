@@ -18,7 +18,7 @@ function formatDate(ts) {
   }
 }
 
-export function VocabularyScreen({ vocabulary, onClear }) {
+export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
   const { i18n, t } = useTranslation();
 
   const showChinese = i18n.language === 'zh';
@@ -62,6 +62,11 @@ export function VocabularyScreen({ vocabulary, onClear }) {
                 {showChinese && !!item.zh ? (
                   <Text style={styles.zh}>{item.zh}</Text>
                 ) : null}
+                <Button
+                  title={t('vocabulary.delete') || 'Delete'}
+                  variant="secondary"
+                  onPress={() => onDelete?.(item.id)}
+                />
               </View>
               <Text style={styles.meta}>
                 {t('vocabulary.addedAt')}: {formatDate(item.createdAt)}

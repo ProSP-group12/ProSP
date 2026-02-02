@@ -10,7 +10,7 @@ async function callGemini(imageBase64) {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error("GEMINI_API_KEY not set");
 
-  const prompt = `You are an image-quality assistant. Evaluate whether the photo is a good usable photo for an educational vocabulary app. Consider blur, framing, lighting, and whether the object is clearly visible. Reply ONLY with a single JSON object exactly like this: {"good": true} or {"good": false}.`;
+  const prompt = `You are an image-quality and vocabulary assistant. Evaluate whether the photo is a good usable photo for an educational vocabulary app. Consider blur, framing, lighting, and whether the object is clearly visible. If the photo is good, extract ONLY the main object in the photo as a single vocabulary word. If the word is in English, reply ONLY with: {"good": true, "vocab": [{"word": "apple"}]}. If the word is not in English, reply with: {"good": true, "vocab": [{"word": "苹果", "zh": "apple"}]}. If the photo is not good, reply with: {"good": false, "vocab": []}. Reply ONLY with a single JSON object in this format.`;
 
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent?key=${key}`,
@@ -50,7 +50,25 @@ async function callGemini(imageBase64) {
   if (!match) throw new Error("Gemini response did not include JSON");
 
   const parsed = JSON.parse(match[0]);
-  return !!parsed.good;
+  // Ensure vocab is always an array, and only one vocab item is returned
+  let vocab = Array.isArray(parsed.vocab) ? parsed.vocab : [];
+  if (vocab.length > 1) vocab = [vocab[0]];
+  if (vocab[0]) {
+    const word = vocab[0].word;
+    // If word is all Chinese characters, return only the Chinese word
+    if (/^[\u4e00-\u9fa5]+$/.test(word)) {
+      vocab[0] = { word };
+    } else if (/^[A-Za-z]+$/.test(word)) {
+      // If word is all English letters, return only the English word
+      vocab[0] = { word };
+    } else {
+      // If mixed or unknown, just return as is
+    }
+  }
+  return {
+    good: !!parsed.good,
+    vocab,
+  };
 }
 
 app.post("/detect-good", async (req, res) => {
@@ -60,8 +78,11 @@ app.post("/detect-good", async (req, res) => {
       return res.status(400).json({ error: "Missing imageBase64" });
     }
 
-    const good = await callGemini(imageBase64);
-    res.json({ good });
+    const result = await callGemini(imageBase64);
+    res.json({
+      good: !!result.good,
+      vocab: Array.isArray(result.vocab) ? result.vocab : [],
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });

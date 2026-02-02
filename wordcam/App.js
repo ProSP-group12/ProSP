@@ -110,6 +110,7 @@ export default function App() {
               <VocabularyScreen
                 vocabulary={vocabulary}
                 onClear={() => setVocabulary([])}
+                onDelete={(id) => setVocabulary((prev) => prev.filter((v) => v.id !== id))}
               />
             )}
           </Tab.Screen>

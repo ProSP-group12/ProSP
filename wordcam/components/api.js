@@ -13,7 +13,8 @@ export async function detectGood(imageUri) {
   // If no remote URL is configured, use local image analysis.
   if (!url) {
     console.log('[detectGood] no DETECT_API_URL configured; using local analysis');
-    return await analyzeImageLocally(imageUri);
+    const good = await analyzeImageLocally(imageUri);
+    return { good, vocab: good ? [{ word: 'example', zh: '示例' }] : [] };
   }
 
   try {
@@ -39,18 +40,21 @@ export async function detectGood(imageUri) {
     if (!resp.ok) {
       const text = await resp.text();
       console.error('[detectGood] server error', resp.status, text);
-      return false;
+      return { good: false, vocab: [] };
     }
 
     const json = await resp.json();
     console.log('[detectGood] response', JSON.stringify(json));
 
-    // Expect { good: true }
-    return !!json?.good;
+    // Expect { good: true, vocab: [...] }
+    return {
+      good: !!json?.good,
+      vocab: Array.isArray(json?.vocab) ? json.vocab : [],
+    };
 
   } catch (e) {
     console.error('[detectGood] failed', e?.message || e);
-    return false;
+    return { good: false, vocab: [] };
   }
 }
 

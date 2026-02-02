@@ -1,10 +1,9 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, FlatList } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Card, SubTitle, Title } from './ui';
-import { generateVocabularyForObject, simulateDetection } from './vocab';
 import { detectGood } from './api';
 
 export function CameraScreen({ onAddVocabulary }) {
@@ -12,16 +11,11 @@ export function CameraScreen({ onAddVocabulary }) {
   const cameraRef = useRef(null);
   const [permission, requestPermission] = useCameraPermissions();
   const [busy, setBusy] = useState(false);
-  const [detected, setDetected] = useState(null);
+  const [vocab, setVocab] = useState(null);
   const [notGood, setNotGood] = useState(false);
   const [detectError, setDetectError] = useState(null);
 
   const canUseCamera = permission?.granted;
-
-  const header = useMemo(() => {
-    if (!detected) return null;
-    return `${detected.label}${detected.zh ? ` / ${detected.zh}` : ''}`;
-  }, [detected]);
 
   if (!permission) {
     return (
@@ -47,43 +41,43 @@ export function CameraScreen({ onAddVocabulary }) {
   async function handleCapture() {
     if (busy) return;
     setBusy(true);
-    setDetected(null);
+    setVocab(null);
     setNotGood(false);
 
     try {
-      // Capture an image and keep its uri so we can create a sticker.
       const photo = await cameraRef.current?.takePictureAsync?.({ quality: 0.6 });
 
       setDetectError(null);
 
-      // Optional remote/local check to determine if the photo is "good".
-      try {
-        const isGood = await detectGood(photo?.uri);
-        if (!isGood) {
-          setNotGood(true);
-          return;
-        }
-      } catch (e) {
-        // Capture any error message for UI debugging.
-        console.error('detectGood threw:', e?.message || e);
-        setDetectError(e?.message || String(e));
+      const result = await detectGood(photo?.uri);
+
+      if (!result?.good || !result?.vocab?.length) {
         setNotGood(true);
         return;
       }
 
-      // Simulate AI detection + vocab generation and attach the photo uri.
-      const det = simulateDetection();
-      setDetected({ ...det, uri: photo?.uri ?? null });
+      const now = Date.now();
+      setVocab(result.vocab.map((item, i) => ({
+        id: `${now}-${i}`,
+        word: item.word,
+        zh: item.zh,
+        image: photo?.uri,
+        createdAt: now
+      })));
+
+    } catch (e) {
+      console.error('detectGood failed:', e);
+      setDetectError(e?.message || String(e));
+      setNotGood(true);
     } finally {
       setBusy(false);
     }
   }
 
   function handleAdd() {
-    if (!detected) return;
-    const items = generateVocabularyForObject(detected.label, detected.uri);
-    onAddVocabulary?.(items);
-    setDetected(null);
+    if (!vocab) return;
+    onAddVocabulary?.(vocab);
+    setVocab(null);
   }
 
   return (
@@ -110,22 +104,42 @@ export function CameraScreen({ onAddVocabulary }) {
               <Text style={styles.resultText}>{t('camera.analyzing')}</Text>
             </View>
           </Card>
-        ) : detected ? (
+        ) : vocab ? (
           <Card style={styles.resultCard}>
-            <Text style={styles.resultLabel}>{t('camera.resultTitle')}</Text>
-            <Text style={styles.resultTitle}>{header}</Text>
+            <Text style={styles.resultLabel}>Detected Vocabulary</Text>
+
+            <FlatList
+              data={vocab}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <Text style={styles.word}>
+                  {item.word} — {item.zh}
+                </Text>
+              )}
+            />
+
             <View style={{ height: 12 }} />
-            <Button title={t('camera.addToVocabulary')} onPress={handleAdd} />
+            <View style={{ flexDirection: 'row', gap: 12 }}>
+              <Button title="Add to Vocabulary" onPress={handleAdd} />
+              <Button title="Cancel" variant="secondary" onPress={() => setVocab(null)} />
+            </View>
           </Card>
         ) : notGood ? (
           <Card style={styles.resultCard}>
-            <Text style={styles.resultLabel}>{t('camera.badPhotoTitle') || 'Photo quality'}</Text>
-            <Text style={styles.resultTitle}>{t('camera.badPhotoBody') || 'That photo looks blurry or unsuitable — try again.'}</Text>
+            <Text style={styles.resultLabel}>Photo issue</Text>
+            <Text style={styles.resultTitle}>Try another clearer photo</Text>
+
             {detectError ? (
-              <Text style={{ color: '#F6C8C8', marginTop: 8 }}>{`Error: ${detectError}`}</Text>
+              <Text style={{ color: '#C62828', marginTop: 8 }}>
+                Error: {detectError}
+              </Text>
             ) : null}
+
             <View style={{ height: 12 }} />
-            <Button title={t('camera.retake') || 'Retake'} onPress={() => { setNotGood(false); setDetectError(null); }} />
+            <Button title="Retake" onPress={() => {
+              setNotGood(false);
+              setDetectError(null);
+            }} />
           </Card>
         ) : (
           <Button title={t('camera.takePhoto')} onPress={handleCapture} />
@@ -154,36 +168,31 @@ const styles = StyleSheet.create({
     borderColor: '#FFD700',
     backgroundColor: '#FFFFFF'
   },
-  camera: {
-    flex: 1
-  },
-  bottom: {
-    paddingTop: 14
-  },
-  resultCard: {
-    marginTop: 2
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10
-  },
+  camera: { flex: 1 },
+  bottom: { paddingTop: 14 },
+  resultCard: { marginTop: 2 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+
   resultText: {
-    color: '#000000',
+    color: '#000',
     fontSize: 16,
     fontWeight: '700'
   },
+
   resultLabel: {
-    color: '#333333',
     fontSize: 12,
     fontWeight: '700',
-    textTransform: 'uppercase'
+    color: '#444'
   },
+
   resultTitle: {
-    color: '#000000',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '800',
+    marginTop: 6
+  },
+
+  word: {
+    fontSize: 16,
     marginTop: 6
   }
 });
-
