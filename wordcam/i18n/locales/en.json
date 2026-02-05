@@ -25,6 +25,6 @@
     "title": "Settings",
     "language": "Language",
     "english": "English",
-    "chinese": "Chinese"
+    // Removed Chinese language support
   }
 }

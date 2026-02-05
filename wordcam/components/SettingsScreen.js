@@ -7,11 +7,11 @@ import { Button, Card, SubTitle, Title } from './ui';
 export function SettingsScreen() {
   const { i18n, t } = useTranslation();
 
-  const isZh = i18n.language === 'zh';
+  // Removed Chinese language support
 
   const current = useMemo(
-    () => (isZh ? t('settings.chinese') : t('settings.english')),
-    [isZh, t]
+    () => t('settings.english'),
+    [t]
   );
 
   async function setLanguage(next) {
@@ -39,19 +39,11 @@ export function SettingsScreen() {
             <Button
               title={t('settings.english')}
               onPress={() => setLanguage('en')}
-              disabled={!isZh}
+              // Removed Chinese language support
               variant="secondary"
             />
           </View>
-          <View style={{ width: 10 }} />
-          <View style={{ flex: 1 }}>
-            <Button
-              title={t('settings.chinese')}
-              onPress={() => setLanguage('zh')}
-              disabled={isZh}
-              variant="secondary"
-            />
-          </View>
+
         </View>
       </Card>
     </View>

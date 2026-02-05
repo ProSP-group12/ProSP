@@ -10,7 +10,7 @@ async function callGemini(imageBase64) {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error("GEMINI_API_KEY not set");
 
-  const prompt = `You are an image-quality and vocabulary assistant. Evaluate whether the photo is a good usable photo for an educational vocabulary app. Consider blur, framing, lighting, and whether the object is clearly visible. If the photo is good, extract ONLY the main object in the photo as a single vocabulary word. If the word is in English, reply ONLY with: {"good": true, "vocab": [{"word": "apple"}]}. If the word is not in English, reply with: {"good": true, "vocab": [{"word": "苹果", "zh": "apple"}]}. If the photo is not good, reply with: {"good": false, "vocab": []}. Reply ONLY with a single JSON object in this format.`;
+  const prompt = `You are an image-quality and vocabulary assistant. Evaluate whether the photo is a good usable photo for an educational vocabulary app. Consider blur, framing, lighting, and whether the object is clearly visible. If the photo is good, extract ONLY the main object in the photo as a single vocabulary word. Reply ONLY with: {"good": true, "vocab": [{"word": "apple"}]}. If the photo is not good, reply with: {"good": false, "vocab": []}. Reply ONLY with a single JSON object in this format.`;
 
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent?key=${key}`,
@@ -55,7 +55,7 @@ async function callGemini(imageBase64) {
   if (vocab.length > 1) vocab = [vocab[0]];
   if (vocab[0]) {
     const word = vocab[0].word;
-    // If word is all Chinese characters, return only the Chinese word
+    // Removed Chinese language support
     if (/^[\u4e00-\u9fa5]+$/.test(word)) {
       vocab[0] = { word };
     } else if (/^[A-Za-z]+$/.test(word)) {

@@ -13,7 +13,7 @@ By combining **multimodal AI**, image recognition, and language generation, Word
 - 🧠 AI-powered vocabulary generation  
 - 📱 Optimized for mobile devices  
 - 🌍 Learn words from real-life environments  
-- 🌐 Bilingual support (English & Chinese)
+-- 🌐 English language support
 ---
 
 ## 🎯 Motivation
@@ -138,7 +138,7 @@ All app code lives under `wordcam/`:
   - `config.js` - i18n setup
   - `locales/` - Translation files
     - `en.json` - English translations
-    - `zh.json` - Chinese translations
+   // Removed Chinese translations
 
 ---
 
@@ -146,7 +146,7 @@ All app code lives under `wordcam/`:
 
 The app supports two languages:
 - **English** (en)
-- **Chinese** (zh)
+// Removed Chinese language support
 
 Users can switch languages in the Settings screen. The app automatically detects the device language on first launch.
 

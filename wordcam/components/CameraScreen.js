@@ -1,6 +1,6 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, FlatList } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, FlatList, Image, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Card, SubTitle, Title } from './ui';
@@ -11,9 +11,11 @@ export function CameraScreen({ onAddVocabulary }) {
   const cameraRef = useRef(null);
   const [permission, requestPermission] = useCameraPermissions();
   const [busy, setBusy] = useState(false);
+  const [capturedPhoto, setCapturedPhoto] = useState(null);
   const [vocab, setVocab] = useState(null);
   const [notGood, setNotGood] = useState(false);
   const [detectError, setDetectError] = useState(null);
+  const [facing, setFacing] = useState('back');
 
   const canUseCamera = permission?.granted;
 
@@ -43,10 +45,11 @@ export function CameraScreen({ onAddVocabulary }) {
     setBusy(true);
     setVocab(null);
     setNotGood(false);
+    setCapturedPhoto(null);
 
     try {
       const photo = await cameraRef.current?.takePictureAsync?.({ quality: 0.6 });
-
+      setCapturedPhoto(photo?.uri);
       setDetectError(null);
 
       const result = await detectGood(photo?.uri);
@@ -60,7 +63,6 @@ export function CameraScreen({ onAddVocabulary }) {
       setVocab(result.vocab.map((item, i) => ({
         id: `${now}-${i}`,
         word: item.word,
-        zh: item.zh,
         image: photo?.uri,
         createdAt: now
       })));
@@ -71,6 +73,7 @@ export function CameraScreen({ onAddVocabulary }) {
       setNotGood(true);
     } finally {
       setBusy(false);
+      // keep capturedPhoto until next capture
     }
   }
 
@@ -85,15 +88,41 @@ export function CameraScreen({ onAddVocabulary }) {
       <View style={styles.top}>
         <Title>{t('camera.title')}</Title>
         <SubTitle>{t('camera.subtitle')}</SubTitle>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 8 }}>
+          <Pressable
+            onPress={() => setFacing(facing === 'back' ? 'front' : 'back')}
+            style={({ pressed }) => [{
+              padding: 6,
+              borderRadius: 18,
+              backgroundColor: pressed ? '#eee' : '#fff',
+              borderWidth: 1,
+              borderColor: '#FFD700',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 36,
+              height: 36,
+              marginRight: 2
+            }]}
+            accessibilityLabel={facing === 'back' ? (t('camera.switchToFront') || 'Switch to Front Camera') : (t('camera.switchToBack') || 'Switch to Back Camera')}
+          >
+            <Text style={{ fontSize: 22 }}>
+              {'\u21C4'}
+            </Text>
+          </Pressable>
+        </View>
       </View>
 
       <View style={styles.cameraWrap}>
-        <CameraView
-          ref={cameraRef}
-          facing="back"
-          style={styles.camera}
-          responsiveOrientationWhenOrientationLocked
-        />
+        {busy && capturedPhoto ? (
+          <Image source={{ uri: capturedPhoto }} style={styles.camera} resizeMode="cover" />
+        ) : (
+          <CameraView
+            ref={cameraRef}
+            facing={facing}
+            style={styles.camera}
+            responsiveOrientationWhenOrientationLocked
+          />
+        )}
       </View>
 
       <View style={styles.bottom}>
@@ -103,6 +132,8 @@ export function CameraScreen({ onAddVocabulary }) {
               <ActivityIndicator />
               <Text style={styles.resultText}>{t('camera.analyzing')}</Text>
             </View>
+            <View style={{ height: 12 }} />
+            <Button title="Cancel Capture" variant="secondary" onPress={() => { setBusy(false); setCapturedPhoto(null); }} />
           </Card>
         ) : vocab ? (
           <Card style={styles.resultCard}>
@@ -113,7 +144,7 @@ export function CameraScreen({ onAddVocabulary }) {
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <Text style={styles.word}>
-                  {item.word} — {item.zh}
+                  {item.word}
                 </Text>
               )}
             />

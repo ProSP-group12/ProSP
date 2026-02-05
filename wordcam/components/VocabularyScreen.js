@@ -8,6 +8,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { Button, Card, Title } from './ui';
+import { Pressable } from 'react-native';
 import { Image } from 'react-native';
 
 function formatDate(ts) {
@@ -21,7 +22,7 @@ function formatDate(ts) {
 export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
   const { i18n, t } = useTranslation();
 
-  const showChinese = i18n.language === 'zh';
+  // Removed Chinese language support
 
   const data = useMemo(() => vocabulary ?? [], [vocabulary]);
 
@@ -59,14 +60,23 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
                   ) : null}
                   <Text style={styles.word}>{item.word}</Text>
                 </View>
-                {showChinese && !!item.zh ? (
-                  <Text style={styles.zh}>{item.zh}</Text>
-                ) : null}
-                <Button
-                  title={t('vocabulary.delete') || 'Delete'}
-                  variant="secondary"
+                {/* Removed Chinese language support */}
+                <Pressable
                   onPress={() => onDelete?.(item.id)}
-                />
+                  style={({ pressed }) => [{
+                    marginLeft: 8,
+                    padding: 4,
+                    borderRadius: 12,
+                    backgroundColor: pressed ? '#eee' : 'transparent',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 28,
+                    height: 28,
+                  }]}
+                  accessibilityLabel={t('vocabulary.delete') || 'Delete'}
+                >
+                  <Text style={{ fontSize: 18, color: '#000', fontWeight: 'bold' }}>×</Text>
+                </Pressable>
               </View>
               <Text style={styles.meta}>
                 {t('vocabulary.addedAt')}: {formatDate(item.createdAt)}
@@ -131,7 +141,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     overflow: 'hidden'
   },
-  zh: {
+  // Removed Chinese language support
+  word: {
     color: '#333333',
     fontSize: 16,
     fontWeight: '700'

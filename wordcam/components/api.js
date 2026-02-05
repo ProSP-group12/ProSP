@@ -14,7 +14,7 @@ export async function detectGood(imageUri) {
   if (!url) {
     console.log('[detectGood] no DETECT_API_URL configured; using local analysis');
     const good = await analyzeImageLocally(imageUri);
-    return { good, vocab: good ? [{ word: 'example', zh: '示例' }] : [] };
+    return { good, vocab: good ? [{ word: 'example' }] : [] };
   }
 
   try {
