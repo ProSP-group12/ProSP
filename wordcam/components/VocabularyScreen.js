@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
+import { Audio } from 'expo-av';
 import {
   FlatList,
   StyleSheet,
@@ -25,6 +26,24 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
   // Removed Chinese language support
 
   const data = useMemo(() => vocabulary ?? [], [vocabulary]);
+
+  // Play example sound for a word
+  const playExampleSound = async (word) => {
+    try {
+      // Use Google Translate TTS as an example (for demo, not for production)
+      const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(word)}&tl=en&client=tw-ob`;
+      const { sound } = await Audio.Sound.createAsync({ uri: url });
+      await sound.playAsync();
+      // Optionally unload after playback
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.didJustFinish) {
+          sound.unloadAsync();
+        }
+      });
+    } catch (e) {
+      // Ignore errors for now
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -59,6 +78,22 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
                     />
                   ) : null}
                   <Text style={styles.word}>{item.word}</Text>
+                  <Pressable
+                    onPress={() => playExampleSound(item.word)}
+                    style={({ pressed }) => [{
+                      marginLeft: 8,
+                      padding: 4,
+                      borderRadius: 12,
+                      backgroundColor: pressed ? '#cce5ff' : '#e6f2ff',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 28,
+                      height: 28,
+                    }]}
+                    accessibilityLabel={t('vocabulary.sound') || 'Play sound'}
+                  >
+                    <Text style={{ fontSize: 18, color: '#007AFF', fontWeight: 'bold' }}>🔊</Text>
+                  </Pressable>
                 </View>
                 {/* Removed Chinese language support */}
                 <Pressable

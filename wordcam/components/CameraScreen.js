@@ -1,5 +1,6 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState, useEffect } from 'react';
+import { Audio } from 'expo-av';
 import { ActivityIndicator, StyleSheet, Text, View, FlatList, Image, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -16,6 +17,27 @@ export function CameraScreen({ onAddVocabulary }) {
   const [notGood, setNotGood] = useState(false);
   const [detectError, setDetectError] = useState(null);
   const [facing, setFacing] = useState('back');
+
+  // Play example sound for the first vocab word when vocab appears
+  useEffect(() => {
+    if (vocab && Array.isArray(vocab) && vocab.length > 0) {
+      const playExampleSound = async (word) => {
+        try {
+          const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(word)}&tl=en&client=tw-ob`;
+          const { sound } = await Audio.Sound.createAsync({ uri: url });
+          await sound.playAsync();
+          sound.setOnPlaybackStatusUpdate((status) => {
+            if (status.didJustFinish) {
+              sound.unloadAsync();
+            }
+          });
+        } catch (e) {
+          // Ignore errors
+        }
+      };
+      playExampleSound(vocab[0].word);
+    }
+  }, [vocab]);
 
   const canUseCamera = permission?.granted;
 
@@ -60,12 +82,16 @@ export function CameraScreen({ onAddVocabulary }) {
       }
 
       const now = Date.now();
-      setVocab(result.vocab.map((item, i) => ({
-        id: `${now}-${i}`,
-        word: item.word,
-        image: photo?.uri,
-        createdAt: now
-      })));
+      // Only keep the first detected vocab
+      const first = result.vocab[0];
+      setVocab([
+        {
+          id: `${now}-0`,
+          word: first.word,
+          image: photo?.uri,
+          createdAt: now
+        }
+      ]);
 
     } catch (e) {
       console.error('detectGood failed:', e);
