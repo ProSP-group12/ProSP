@@ -54,58 +54,42 @@ WordCam connects language learning with daily life, making vocabulary acquisitio
    - **iOS**: Download from [App Store](https://apps.apple.com/app/expo-go/id982107779)
    - **Android**: Download from [Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent)
 
-### Installation Steps
 
-1. **Navigate to project directory:**
-   ```bash
-   cd /Users/xuanyuliu/Documents/ProSP
-   ```
+### Installation & Usage Steps
 
-2. **Go into the Expo app folder:**
-   ```bash
-   cd wordcam
-   ```
+1. **Set up GEMINI_API_KEY**
+   - In the `wordcam/server` directory, create a `.env` file and add:
+     ```
+     GEMINI_API_KEY=your_api_key_here
+     ```
+   - Replace `your_api_key_here` with your actual Gemini API key.
 
-3. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-   This will install all required packages (Expo SDK 54, React Native, etc.)
+2. **Start the server**
+   - Open a terminal and navigate to the server folder:
+     ```bash
+     cd wordcam/server
+     npm start
+     ```
 
-4. **Start the development server:**
-   ```bash
-   npm start
-   ```
-   Or use:
-   ```bash
-   npx expo start
-   ```
+3. **Start the Expo app**
+   - Open a new terminal and navigate to the app folder:
+     ```bash
+     cd wordcam
+     npm start
+     ```
+   - This will launch the Expo development server.
 
-5. **Run the app:**
-   
-   **Option A: On your phone (Recommended)**
-   - A QR code will appear in your terminal
-   - **iOS**: Open Camera app → Scan QR code → Tap notification → Opens in Expo Go
-   - **Android**: Open Expo Go app → Tap "Scan QR code" → Scan the QR code
-   - Make sure your phone and computer are on the same WiFi network
+4. **Open the app in Expo Go**
+   - Install the Expo Go app on your phone (iOS/Android).
+   - Scan the QR code shown in your terminal to open the app.
+   - Make sure your phone and computer are on the same WiFi network.
 
-   **Option B: iOS Simulator (macOS only)**
-   ```bash
-   npm run ios
-   ```
-   Requires: Xcode installed from App Store
+5. **Other options**
+   - iOS Simulator: `npm run ios` (requires Xcode)
+   - Android Emulator: `npm run android` (requires Android Studio)
+   - Web browser: `npm run web` (camera features may be limited)
 
-   **Option C: Android Emulator**
-   ```bash
-   npm run android
-   ```
-   Requires: Android Studio with Android SDK and emulator set up
-
-   **Option D: Web browser**
-   ```bash
-   npm run web
-   ```
-   Note: Camera functionality may be limited in web browsers
+---
 
 ### Troubleshooting
 
