@@ -130,7 +130,6 @@ All app code lives under `wordcam/`:
 
 The app supports two languages:
 - **English** (en)
-// Removed Chinese language support
 
 Users can switch languages in the Settings screen. The app automatically detects the device language on first launch.
 
