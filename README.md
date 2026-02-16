@@ -122,17 +122,15 @@ All app code lives under `wordcam/`:
   - `config.js` - i18n setup
   - `locales/` - Translation files
     - `en.json` - English translations
-   // Removed Chinese translations
+
 
 ---
 
+
 ## 🌐 Language Support
 
-The app supports two languages:
-- **English** (en)
-// Removed Chinese language support
-
-Users can switch languages in the Settings screen. The app automatically detects the device language on first launch.
+- The app's UI supports three languages: **English**, **Chinese**, and **Finnish**. You can switch between them in the Settings screen. The app automatically detects the device language on first launch.
+- **Note:** Currently, only English vocabulary words can be added and recognized. Vocabulary detection and audio are English-only, but the interface and settings are available in all three languages.
 
 ---
 

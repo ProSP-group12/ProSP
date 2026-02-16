@@ -13,7 +13,12 @@
     "takePhoto": "Capture",
     "analyzing": "Analyzing…",
     "resultTitle": "Detected",
-    "addToVocabulary": "Add to vocabulary"
+    "addToVocabulary": "Add to vocabulary",
+    "cancelCapture": "Cancel Capture",
+    "cancel": "Cancel",
+    "photoIssue": "Photo issue",
+    "tryAnother": "Try another clearer photo",
+    "retake": "Retake"
   },
   "vocabulary": {
     "title": "Your vocabulary",
@@ -25,6 +30,7 @@
     "title": "Settings",
     "language": "Language",
     "english": "English",
-    // Removed Chinese language support
+    "chinese": "Chinese",
+    "finnish": "Finnish"
   }
 }

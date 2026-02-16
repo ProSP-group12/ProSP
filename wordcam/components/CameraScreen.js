@@ -159,7 +159,7 @@ export function CameraScreen({ onAddVocabulary }) {
               <Text style={styles.resultText}>{t('camera.analyzing')}</Text>
             </View>
             <View style={{ height: 12 }} />
-            <Button title="Cancel Capture" variant="secondary" onPress={() => { setBusy(false); setCapturedPhoto(null); }} />
+            <Button title={t('camera.cancelCapture')} variant="secondary" onPress={() => { setBusy(false); setCapturedPhoto(null); }} />
           </Card>
         ) : vocab ? (
           <Card style={styles.resultCard}>
@@ -177,14 +177,14 @@ export function CameraScreen({ onAddVocabulary }) {
 
             <View style={{ height: 12 }} />
             <View style={{ flexDirection: 'row', gap: 12 }}>
-              <Button title="Add to Vocabulary" onPress={handleAdd} />
-              <Button title="Cancel" variant="secondary" onPress={() => setVocab(null)} />
+              <Button title={t('camera.addToVocabulary')} onPress={handleAdd} />
+              <Button title={t('camera.cancel')} variant="secondary" onPress={() => setVocab(null)} />
             </View>
           </Card>
         ) : notGood ? (
           <Card style={styles.resultCard}>
-            <Text style={styles.resultLabel}>Photo issue</Text>
-            <Text style={styles.resultTitle}>Try another clearer photo</Text>
+            <Text style={styles.resultLabel}>{t('camera.photoIssue')}</Text>
+            <Text style={styles.resultTitle}>{t('camera.tryAnother')}</Text>
 
             {detectError ? (
               <Text style={{ color: '#C62828', marginTop: 8 }}>
@@ -193,7 +193,7 @@ export function CameraScreen({ onAddVocabulary }) {
             ) : null}
 
             <View style={{ height: 12 }} />
-            <Button title="Retake" onPress={() => {
+            <Button title={t('camera.retake')} onPress={() => {
               setNotGood(false);
               setDetectError(null);
             }} />

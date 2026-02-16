@@ -1,0 +1,36 @@
+{
+  "tabs": {
+    "camera": "Kamera",
+    "vocabulary": "Sanasto",
+    "settings": "Asetukset"
+  },
+  "camera": {
+    "title": "Osoita ja opi",
+    "subtitle": "Ota kuva esineestä luodaksesi sanastoa.",
+    "permissionTitle": "Kameran lupa tarvitaan",
+    "permissionBody": "Salli kameran käyttö WordCam-sovelluksessa.",
+    "grant": "Salli lupa",
+    "takePhoto": "Ota kuva",
+    "analyzing": "Analysoidaan…",
+    "resultTitle": "Tunnistettu",
+    "addToVocabulary": "Lisää sanastoon",
+    "cancelCapture": "Peruuta kuvaus",
+    "cancel": "Peruuta",
+    "photoIssue": "Kuvaongelma",
+    "tryAnother": "Yritä uudelleen selkeämmällä kuvalla",
+    "retake": "Ota uudelleen"
+  },
+  "vocabulary": {
+    "title": "Sanastosi",
+    "empty": "Ei sanoja vielä. Ota kuva aloittaaksesi.",
+    "clear": "Tyhjennä kaikki",
+    "addedAt": "Lisätty"
+  },
+  "settings": {
+    "title": "Asetukset",
+    "language": "Kieli",
+    "english": "Englanti",
+    "chinese": "Kiina",
+    "finnish": "Suomi"
+  }
+}

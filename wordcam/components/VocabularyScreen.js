@@ -31,10 +31,11 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
   const playExampleSound = async (word) => {
     try {
       // Use Google Translate TTS as an example (for demo, not for production)
-      const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(word)}&tl=en&client=tw-ob`;
+      // Use the current language for TTS
+      const lang = i18n.language === 'zh' ? 'zh-CN' : 'en';
+      const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(word)}&tl=${lang}&client=tw-ob`;
       const { sound } = await Audio.Sound.createAsync({ uri: url });
       await sound.playAsync();
-      // Optionally unload after playback
       sound.setOnPlaybackStatusUpdate((status) => {
         if (status.didJustFinish) {
           sound.unloadAsync();
@@ -77,7 +78,7 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
                       resizeMode="cover"
                     />
                   ) : null}
-                  <Text style={styles.word}>{item.word}</Text>
+                  <Text style={styles.word}>{t(`vocab.${item.word}`, item.word)}</Text>
                   <Pressable
                     onPress={() => playExampleSound(item.word)}
                     style={({ pressed }) => [{

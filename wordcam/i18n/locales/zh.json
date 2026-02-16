@@ -13,7 +13,12 @@
     "takePhoto": "拍摄",
     "analyzing": "分析中…",
     "resultTitle": "识别到",
-    "addToVocabulary": "加入词汇本"
+    "addToVocabulary": "加入词汇本",
+    "cancelCapture": "取消拍摄",
+    "cancel": "取消",
+    "photoIssue": "照片问题",
+    "tryAnother": "请尝试拍摄更清晰的照片",
+    "retake": "重拍"
   },
   "vocabulary": {
     "title": "你的词汇本",
@@ -25,6 +30,7 @@
     "title": "设置",
     "language": "语言",
     "english": "英文",
-    "chinese": "中文"
+    "chinese": "中文",
+    "finnish": "芬兰语"
   }
 }
