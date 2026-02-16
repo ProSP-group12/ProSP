@@ -1,0 +1,36 @@
+{
+  "tabs": {
+    "camera": "Camera",
+    "vocabulary": "Vocabulary",
+    "settings": "Settings"
+  },
+  "camera": {
+    "title": "Point and learn",
+    "subtitle": "Capture an object to generate vocabulary.",
+    "permissionTitle": "Camera permission needed",
+    "permissionBody": "Please allow camera access to use WordCam.",
+    "grant": "Grant permission",
+    "takePhoto": "Capture",
+    "analyzing": "Analyzing…",
+    "resultTitle": "Detected",
+    "addToVocabulary": "Add to vocabulary",
+    "cancelCapture": "Cancel Capture",
+    "cancel": "Cancel",
+    "photoIssue": "Photo issue",
+    "tryAnother": "Try another clearer photo",
+    "retake": "Retake"
+  },
+  "vocabulary": {
+    "title": "Your vocabulary",
+    "empty": "No words yet. Capture something to start.",
+    "clear": "Clear all",
+    "addedAt": "Added"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "english": "English",
+    "chinese": "Chinese",
+    "finnish": "Finnish"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "tabs": {
+    "camera": "相机",
+    "vocabulary": "词汇",
+    "settings": "设置"
+  },
+  "camera": {
+    "title": "拍照学单词",
+    "subtitle": "拍摄物体以生成词汇。",
+    "permissionTitle": "需要相机权限",
+    "permissionBody": "请允许相机访问以使用 WordCam。",
+    "grant": "授权",
+    "takePhoto": "拍摄",
+    "analyzing": "分析中…",
+    "resultTitle": "识别到",
+    "addToVocabulary": "加入词汇本",
+    "cancelCapture": "取消拍摄",
+    "cancel": "取消",
+    "photoIssue": "照片问题",
+    "tryAnother": "请尝试拍摄更清晰的照片",
+    "retake": "重拍"
+  },
+  "vocabulary": {
+    "title": "你的词汇本",
+    "empty": "还没有单词。先拍点东西开始吧。",
+    "clear": "清空",
+    "addedAt": "添加时间"
+  },
+  "settings": {
+    "title": "设置",
+    "language": "语言",
+    "english": "英文",
+    "chinese": "中文",
+    "finnish": "芬兰语"
+  }
+}
