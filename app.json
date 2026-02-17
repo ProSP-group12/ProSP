@@ -3,18 +3,34 @@
     "name": "ImageRecognitionApp",
     "slug": "image-recognition-app",
     "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "icon": "./assets/icon.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "ios": {
-      "supportsTabletMode": true
+      "supportsTabletMode": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Camera permission is needed to take photos",
+        "NSPhotoLibraryUsageDescription": "Photo library permission is needed"
+      }
     },
     "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE"
       ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
       [
@@ -26,8 +42,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Photos permission needed",
-          "cameraPermission": "Camera permission needed"
+          "photosPermission": "Photos permission needed to select images",
+          "cameraPermission": "Camera permission needed for image recognition"
         }
       ]
     ]

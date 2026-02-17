@@ -1,18 +1,6 @@
 // API configuration and constants
 export const API_CONFIG = {
-  API_KEY: 'YOUR_API_KEY_HERE',
-  ENDPOINT: 'https://vision.googleapis.com/v1/images:annotate',
+  // Replace with your backend endpoint that accepts FormData with 'image' field
+  // e.g., 'http://localhost:5000/recognize' or 'https://your-api.com/recognize'
+  ENDPOINT: 'http://localhost:5000/recognize',
 };
-
-// Camera configuration
-export const CAMERA_CONFIG = {
-  mediaType: 'photo',
-  cameraType: 'back',
-  quality: 0.8,
-};
-
-// Image recognition features configuration
-export const RECOGNITION_FEATURES = [
-  { type: 'OBJECT_LOCALIZATION', maxResults: 10 },
-  { type: 'LABEL_DETECTION', maxResults: 10 },
-];
