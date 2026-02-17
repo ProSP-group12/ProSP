@@ -7,7 +7,7 @@ export default function App() {
     <SafeAreaProvider>
       <View style={styles.container}>
         <Text style={styles.title}>Image Recognition App</Text>
-        <Text style={styles.text}>App is loading...</Text>
+        <Text style={styles.text}>Hello World</Text>
       </View>
     </SafeAreaProvider>
   );
