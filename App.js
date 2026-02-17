@@ -14,19 +14,70 @@ import { sendToImageRecognitionAPI } from './src/services/imageRecognitionAPI';
 
 export default function App() {
   const cameraRef = useRef(null);
+  const realTimeIntervalRef = useRef(null);
   const [permission, requestPermission] = useCameraPermissions();
   const [cameraReady, setCameraReady] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [detectedObjects, setDetectedObjects] = useState([]);
   const [showResults, setShowResults] = useState(false);
+  const [realtimeObject, setRealtimeObject] = useState(null); // Real-time recognition
+  const [capturedPhoto, setCapturedPhoto] = useState(null); // Store captured photo
 
   // Request camera permissions on mount
   useEffect(() => {
     if (!permission) {
       requestPermission();
     }
+
+    // Cleanup real-time recognition on unmount
+    return () => {
+      if (realTimeIntervalRef.current) {
+        clearInterval(realTimeIntervalRef.current);
+      }
+    };
   }, [permission]);
+
+  // Start real-time object recognition when camera is ready
+  useEffect(() => {
+    if (cameraReady && !showResults && !realTimeIntervalRef.current) {
+      startRealtimeRecognition();
+    }
+
+    return () => {
+      if (realTimeIntervalRef.current) {
+        clearInterval(realTimeIntervalRef.current);
+        realTimeIntervalRef.current = null;
+      }
+    };
+  }, [cameraReady, showResults]);
+
+  // Start real-time recognition (every 2 seconds)
+  const startRealtimeRecognition = async () => {
+    realTimeIntervalRef.current = setInterval(async () => {
+      try {
+        if (cameraRef.current && cameraReady && !loading) {
+          const preview = await cameraRef.current.takePictureAsync({
+            quality: 0.5, // Lower quality for faster processing
+            skipProcessing: false,
+          });
+
+          // Recognize preview image
+          const results = await sendToImageRecognitionAPI({
+            uri: preview.uri,
+          });
+
+          if (results && results.length > 0) {
+            // Show only the top result for real-time display
+            setRealtimeObject(results[0]);
+          }
+        }
+      } catch (err) {
+        // Silently fail for real-time recognition - don't disrupt camera
+        console.log('Real-time recognition skipped:', err.message);
+      }
+    }, 2000); // 2 second interval
+  };
 
   // Take photo from camera
   const handleTakePhoto = async () => {
@@ -39,10 +90,19 @@ export default function App() {
       setLoading(true);
       setError(null);
 
+      // Stop real-time recognition
+      if (realTimeIntervalRef.current) {
+        clearInterval(realTimeIntervalRef.current);
+        realTimeIntervalRef.current = null;
+      }
+
       const photo = await cameraRef.current.takePictureAsync({
         quality: 0.8,
         skipProcessing: false,
       });
+
+      // Save the captured photo for display
+      setCapturedPhoto(photo);
 
       // Send to recognition service
       const results = await sendToImageRecognitionAPI({
@@ -91,7 +151,10 @@ export default function App() {
   const handleBackToCamera = () => {
     setShowResults(false);
     setDetectedObjects([]);
+    setCapturedPhoto(null);
+    setRealtimeObject(null);
     setError(null);
+    // Real-time recognition will restart automatically via useEffect
   };
 
   // No camera permission
@@ -133,6 +196,25 @@ export default function App() {
           <View style={styles.header}>
             <Text style={styles.headerTitle}>Image Recognition</Text>
           </View>
+
+          {/* Real-time Recognition Display */}
+          {realtimeObject && (
+            <View style={styles.realtimeContainer}>
+              <View style={styles.realtimeContent}>
+                <Text style={styles.realtimeLabel}>识别到的物体</Text>
+                <Text style={styles.realtimeEnglish}>{realtimeObject.name}</Text>
+                {realtimeObject.finnish && (
+                  <Text style={styles.realtimeFinnish}>{realtimeObject.finnish}</Text>
+                )}
+                {realtimeObject.chinese && (
+                  <Text style={styles.realtimeChinese}>{realtimeObject.chinese}</Text>
+                )}
+                <Text style={styles.realtimeConfidence}>
+                  信心度: {realtimeObject.confidence}%
+                </Text>
+              </View>
+            </View>
+          )}
 
           {/* Error Message */}
           {error && (
@@ -192,7 +274,15 @@ export default function App() {
             {detectedObjects && detectedObjects.length > 0 ? (
               detectedObjects.map((obj, index) => (
                 <View key={index} style={styles.objectCard}>
-                  <Text style={styles.objectLabel}>{obj.name || 'Unknown'}</Text>
+                  <View style={styles.objectNameContainer}>
+                    <Text style={styles.objectLabel}>{obj.name || 'Unknown'}</Text>
+                    {obj.finnish && (
+                      <Text style={styles.objectFinnish}>{obj.finnish}</Text>
+                    )}
+                    {obj.chinese && (
+                      <Text style={styles.objectChinese}>{obj.chinese}</Text>
+                    )}
+                  </View>
                   <View style={styles.confidenceContainer}>
                     <View style={styles.confidenceBarBg}>
                       <View
@@ -263,6 +353,51 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
+  },
+  realtimeContainer: {
+    position: 'absolute',
+    top: 80,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 5,
+  },
+  realtimeContent: {
+    backgroundColor: 'rgba(100, 200, 255, 0.85)',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    minWidth: 200,
+  },
+  realtimeLabel: {
+    fontSize: 12,
+    color: '#fff',
+    marginBottom: 6,
+    opacity: 0.8,
+  },
+  realtimeEnglish: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 4,
+  },
+  realtimeFinnish: {
+    fontSize: 14,
+    color: '#fff',
+    marginBottom: 2,
+    opacity: 0.9,
+  },
+  realtimeChinese: {
+    fontSize: 14,
+    color: '#fff',
+    marginBottom: 6,
+    opacity: 0.9,
+  },
+  realtimeConfidence: {
+    fontSize: 12,
+    color: '#fff',
+    opacity: 0.8,
   },
   errorBanner: {
     position: 'absolute',
@@ -417,7 +552,21 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: '#007AFF',
+    marginBottom: 4,
+  },
+  objectNameContainer: {
     marginBottom: 8,
+  },
+  objectFinnish: {
+    fontSize: 13,
+    color: '#666',
+    marginBottom: 2,
+    fontStyle: 'italic',
+  },
+  objectChinese: {
+    fontSize: 13,
+    color: '#666',
+    marginBottom: 6,
   },
   confidenceContainer: {
     flexDirection: 'row',
