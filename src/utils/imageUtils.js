@@ -1,4 +1,5 @@
 // Image processing utility functions
+import * as FileSystem from 'expo-file-system';
 
 /**
  * Convert image URI to Base64 string
@@ -6,20 +7,14 @@
  * @returns {Promise<string>} Base64 encoded image data
  */
 export const imageToBase64 = async (uri) => {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.onload = () => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        resolve(reader.result.split(',')[1]);
-      };
-      reader.readAsDataURL(xhr.response);
-    };
-    xhr.onerror = () => reject(new Error('Image conversion failed'));
-    xhr.responseType = 'blob';
-    xhr.open('GET', uri, true);
-    xhr.send(null);
-  });
+  try {
+    const base64 = await FileSystem.readAsStringAsync(uri, {
+      encoding: 'base64',
+    });
+    return base64;
+  } catch (error) {
+    throw new Error('Image conversion failed: ' + error.message);
+  }
 };
 
 /**
