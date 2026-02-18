@@ -26,26 +26,15 @@
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE"
-      ]
+      ],
+      "package": "com.anonymous.imagerecognitionapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "plugins": [
-      [
-        "expo-camera",
-        {
-          "cameraPermission": "Camera permission needed for image recognition"
-        }
-      ],
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "Photos permission needed to select images",
-          "cameraPermission": "Camera permission needed for image recognition"
-        }
-      ]
-    ]
+    }
   }
 }
