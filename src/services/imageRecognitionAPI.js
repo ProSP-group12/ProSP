@@ -1,5 +1,6 @@
 // Image Recognition API Service
-import * as FileSystem from 'expo-file-system';
+// use legacy API to avoid deprecation error
+import * as FileSystem from 'expo-file-system/legacy';
 import { API_CONFIG } from '../constants/config';
 
 /**
@@ -41,8 +42,8 @@ export const sendToImageRecognitionAPI = async (imageData) => {
   }
 
   // ===== MOCK MODE: USE FOR TESTING WITHOUT BACKEND =====
-  // Set USE_MOCK_MODE = true to get dummy recognition results
-  const USE_MOCK_MODE = true; // Change to false when you have a real backend
+  // Set USE_MOCK_MODE = false once you point ENDPOINT at your backend
+  const USE_MOCK_MODE = false; // changed for real API
   
   if (USE_MOCK_MODE) {
     try {
@@ -70,6 +71,8 @@ export const sendToImageRecognitionAPI = async (imageData) => {
       encoding: 'base64',  // Changed from FileSystem.EncodingType.Base64 (deprecated in v19)
     });
 
+    console.log('[API] base64Data length:', base64Data?.length);
+
     // Create FormData for real API
     const formData = new FormData();
     formData.append('image', {
@@ -78,6 +81,8 @@ export const sendToImageRecognitionAPI = async (imageData) => {
       name: 'image.jpg',
     });
     formData.append('base64', base64Data);
+
+    console.log('[API] Sending to:', API_CONFIG.ENDPOINT);
 
     // POST to your backend endpoint
     const response = await fetch(API_CONFIG.ENDPOINT, {
@@ -88,20 +93,25 @@ export const sendToImageRecognitionAPI = async (imageData) => {
       body: formData,
     });
 
+    console.log('[API] Response status:', response.status, 'ok:', response.ok);
+
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`);
     }
 
     const result = await response.json();
+    console.log('[API] Response JSON:', result);
 
     // Expected result format: { objects: [{label, finnish, chinese, confidence}, ...] }
     if (result.objects && Array.isArray(result.objects)) {
-      return result.objects.map(obj => ({
+      const mapped = result.objects.map(obj => ({
         name: obj.label || obj.name || 'Unknown',
         finnish: obj.finnish || '',
         chinese: obj.chinese || '',
         confidence: ((obj.confidence || 0) * 100).toFixed(2),
       }));
+      console.log('[API] Mapped result:', mapped);
+      return mapped;
     }
 
     return [];

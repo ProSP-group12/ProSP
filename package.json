@@ -12,6 +12,7 @@
     "eject": "expo prebuild"
   },
   "dependencies": {
+    "@infinitered/react-native-mlkit-image-labeling": "^5.0.0",
     "@infinitered/react-native-mlkit-object-detection": "^5.0.0",
     "expo": "~54.0.33",
     "expo-dev-client": "~6.0.20",
