@@ -1,0 +1,7 @@
+{
+  "name": "SeWdCap AI",
+  "description": "Extract text from images, translate sentences, and analyze scenes.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
