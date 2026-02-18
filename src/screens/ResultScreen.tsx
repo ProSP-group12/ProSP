@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
 import WordCard from '../components/WordCard';
-import { DetectedObject, translateLabel } from '../services/objectDetection';
+import { DetectedObject } from '../services/objectDetection';
 
 interface Props {
   photoPath: string;
   objects: DetectedObject[];
   onBack: () => void;
+  recognizing?: boolean;
 }
 
 interface Translation {
@@ -17,9 +18,10 @@ interface Translation {
 
 const emptyTranslation: Translation = { english: '', finnish: '', chinese: '' };
 
-const ResultScreen: React.FC<Props> = ({ photoPath, objects, onBack }) => {
-  const top = objects && objects.length > 0 ? objects[0] : null;
-  const translation: Translation = top ? translateLabel(top.label) : emptyTranslation;
+const ResultScreen: React.FC<Props> = ({ photoPath, objects, onBack, recognizing }) => {
+  // pick highest-confidence object (sorted by confidence desc)
+  const sorted = objects && objects.length > 0 ? [...objects].sort((a, b) => b.confidence - a.confidence) : [];
+  const top = sorted.length > 0 ? sorted[0] : null;
 
   const hasPhoto = !!photoPath && photoPath.length > 0;
   const uri = hasPhoto
@@ -41,16 +43,16 @@ const ResultScreen: React.FC<Props> = ({ photoPath, objects, onBack }) => {
       </TouchableOpacity>
 
       <View style={styles.bottomPanel}>
-        {top ? (
+        {recognizing ? (
+          <Text style={styles.recognizingText}>Recognizing...</Text>
+        ) : top ? (
           <WordCard
-            english={translation.english}
-            finnish={translation.finnish}
-            chinese={translation.chinese}
+            english={top.label || ''}
+            finnish={top.finnish || ''}
+            chinese={top.chinese || ''}
             confidence={top.confidence}
           />
-        ) : (
-          <Text style={styles.noResultText}>No objects detected.</Text>
-        )}
+        ) : null}
       </View>
     </View>
   );
@@ -73,6 +75,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.45)',
   },
   noResultText: { color: '#fff', fontSize: 16 },
+  recognizingText: { color: '#fff', fontSize: 18, textAlign: 'center', fontWeight: 'bold' },
 });
 
 export default ResultScreen;

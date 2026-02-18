@@ -10,39 +10,48 @@ type CapturedData = {
   objects: DetectedObject[];
 };
 
-
 function AppInner() {
   const [capturedData, setCapturedData] = useState<CapturedData | null>(null);
+  const [recognizing, setRecognizing] = useState(false);
 
-  const handleCapture = async (data: { photo: any; photoPath: string; objects: DetectedObject[] }) => {
+  const handleCapture = async (data: { photo: any; photoPath: string }) => {
     const photoPath = data.photoPath;
+    setRecognizing(true);
 
-    // 先显示照片，清空对象数组
+    // 先把图片显示出来，objects 先空
     setCapturedData({ photo: data.photo, photoPath, objects: [] });
 
     try {
       const uri = photoPath.startsWith('file://') ? photoPath : `file://${photoPath}`;
-      const apiResults = await sendToImageRecognitionAPI({ uri });
 
-      const objects: DetectedObject[] = apiResults.map(r => ({
-        label: r.name,
-        confidence: Number(r.confidence) / 100,
-        bounds: { x: 0, y: 0, width: 0, height: 0 },
-      }));
+      // ✅ 关键：API 直接返回 [{label, finnish, chinese, confidence}]，我们直接用
+      const apiResults: DetectedObject[] = await sendToImageRecognitionAPI({ uri });
 
-      setCapturedData({ photo: data.photo, photoPath, objects });
+      setCapturedData({ photo: data.photo, photoPath, objects: apiResults });
     } catch (e) {
       console.error('API recognition error:', e);
       setCapturedData({ photo: data.photo, photoPath, objects: [] });
+    } finally {
+      setRecognizing(false);
     }
   };
 
-  const handleBack = () => setCapturedData(null);
+  const handleBack = () => {
+    setCapturedData(null);
+    setRecognizing(false);
+  };
 
   return capturedData ? (
-    <ResultScreen photoPath={capturedData.photoPath} objects={capturedData.objects} onBack={handleBack} />
+    <ResultScreen
+      photoPath={capturedData.photoPath}
+      objects={capturedData.objects}
+      onBack={handleBack}
+      recognizing={recognizing}
+    />
   ) : (
-    <CameraScreen onCapture={handleCapture} />
+    <CameraScreen
+      onCapture={(data) => handleCapture({ photo: data.photo, photoPath: data.photoPath })}
+    />
   );
 }
 

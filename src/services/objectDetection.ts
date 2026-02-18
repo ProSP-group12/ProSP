@@ -3,8 +3,14 @@
 export interface DetectedObject {
   label: string;
   confidence: number; // 0..1
-  bounds: { x: number; y: number; width: number; height: number };
+
+  // ✅ Google Vision label detection 不一定有框，所以设为可选
+  bounds?: { x: number; y: number; width: number; height: number };
+
+  finnish?: string;
+  chinese?: string;
 }
+
 
 // Map ML Kit object results to our DetectedObject shape
 export function mapMLKitObjects(mlkitObjects: any[]): DetectedObject[] {
