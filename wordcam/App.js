@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useMemo, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
@@ -93,7 +94,15 @@ export default function App() {
             tabBarInactiveTintColor: '#333333',
           }}
         >
-          <Tab.Screen name="Camera" options={{ title: t('tabs.camera') }}>
+          <Tab.Screen
+            name="Camera"
+            options={{
+              title: t('tabs.camera'),
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="camera" size={size} color={color} />
+              ),
+            }}
+          >
             {() => (
               <CameraScreen
                 onAddVocabulary={(newItems) =>
@@ -104,7 +113,12 @@ export default function App() {
           </Tab.Screen>
           <Tab.Screen
             name="Vocabulary"
-            options={{ title: t('tabs.vocabulary') }}
+            options={{
+              title: t('tabs.vocabulary'),
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="book" size={size} color={color} />
+              ),
+            }}
           >
             {() => (
               <VocabularyScreen
@@ -114,7 +128,15 @@ export default function App() {
               />
             )}
           </Tab.Screen>
-          <Tab.Screen name="Settings" options={{ title: t('tabs.settings') }}>
+          <Tab.Screen
+            name="Settings"
+            options={{
+              title: t('tabs.settings'),
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="settings" size={size} color={color} />
+              ),
+            }}
+          >
             {() => <SettingsScreen />}
           </Tab.Screen>
         </Tab.Navigator>

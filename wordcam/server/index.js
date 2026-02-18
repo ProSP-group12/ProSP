@@ -1,10 +1,47 @@
 const express = require("express");
 const cors = require("cors");
+const https = require("https");
 require("dotenv").config();
 
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
+
+function httpsPost(url, body) {
+  return new Promise((resolve, reject) => {
+    const u = new URL(url);
+    const data = JSON.stringify(body);
+    const req = https.request(
+      {
+        hostname: u.hostname,
+        path: u.pathname + u.search,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Length": Buffer.byteLength(data),
+        },
+      },
+      (res) => {
+        let chunks = "";
+        res.on("data", (c) => (chunks += c));
+        res.on("end", () => {
+          if (res.statusCode >= 400) {
+            reject(new Error(`Gemini error: ${res.statusCode} ${chunks}`));
+          } else {
+            try {
+              resolve(JSON.parse(chunks));
+            } catch (e) {
+              reject(e);
+            }
+          }
+        });
+      }
+    );
+    req.on("error", reject);
+    req.write(data);
+    req.end();
+  });
+}
 
 async function callGemini(imageBase64) {
   const key = process.env.GEMINI_API_KEY;
@@ -12,37 +49,24 @@ async function callGemini(imageBase64) {
 
   const prompt = `You are an image-quality and vocabulary assistant. Evaluate whether the photo is a good usable photo for an educational vocabulary app. Consider blur, framing, lighting, and whether the object is clearly visible. If the photo is good, extract ONLY the main object in the photo as a single vocabulary word. Reply ONLY with: {"good": true, "vocab": [{"word": "apple"}]}. If the photo is not good, reply with: {"good": false, "vocab": []}. Reply ONLY with a single JSON object in this format.`;
 
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent?key=${key}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        contents: [
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent?key=${key}`;
+  const body = {
+    contents: [
+      {
+        parts: [
+          { text: prompt },
           {
-            parts: [
-              { text: prompt },
-              {
-                inline_data: {
-                  mime_type: "image/jpeg",
-                  data: imageBase64,
-                },
-              },
-            ],
+            inline_data: {
+              mime_type: "image/jpeg",
+              data: imageBase64,
+            },
           },
         ],
-      }),
-    }
-  );
+      },
+    ],
+  };
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Gemini error: ${res.status} ${text}`);
-  }
-
-  const json = await res.json();
+  const json = await httpsPost(url, body);
   const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!text) throw new Error("No response from Gemini");
 

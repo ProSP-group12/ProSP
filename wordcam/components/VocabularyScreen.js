@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState, useEffect } from 'react';
 import { Audio } from 'expo-av';
 import {
   FlatList,
@@ -6,6 +6,7 @@ import {
   Text,
   View
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Card, Title } from './ui';
@@ -20,12 +21,55 @@ function formatDate(ts) {
   }
 }
 
+// Fetch phonetic pronunciation for a word
+async function fetchPhonetic(word) {
+  try {
+    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.toLowerCase())}`);
+    if (!response.ok) return null;
+    const data = await response.json();
+    if (Array.isArray(data) && data.length > 0) {
+      // Try phonetic field first, then phonetics array
+      const entry = data[0];
+      if (entry.phonetic) return entry.phonetic;
+      if (entry.phonetics && Array.isArray(entry.phonetics) && entry.phonetics.length > 0) {
+        const phonetic = entry.phonetics.find(p => p.text) || entry.phonetics[0];
+        return phonetic?.text || null;
+      }
+    }
+    return null;
+  } catch (e) {
+    return null;
+  }
+}
+
 export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
   const { i18n, t } = useTranslation();
 
   // Removed Chinese language support
 
   const data = useMemo(() => vocabulary ?? [], [vocabulary]);
+  
+  // Cache phonetics for words
+  const [phonetics, setPhonetics] = useState({});
+  
+  // Fetch phonetics for all words when vocabulary changes
+  useEffect(() => {
+    const fetchAllPhonetics = async () => {
+      const newPhonetics = {};
+      for (const item of data) {
+        if (item.word && !phonetics[item.word]) {
+          const phonetic = await fetchPhonetic(item.word);
+          if (phonetic) {
+            newPhonetics[item.word] = phonetic;
+          }
+        }
+      }
+      if (Object.keys(newPhonetics).length > 0) {
+        setPhonetics(prev => ({ ...prev, ...newPhonetics }));
+      }
+    };
+    fetchAllPhonetics();
+  }, [data]);
 
   // Play example sound for a word
   const playExampleSound = async (word) => {
@@ -78,7 +122,12 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
                       resizeMode="cover"
                     />
                   ) : null}
-                  <Text style={styles.word}>{t(`vocab.${item.word}`, item.word)}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.word}>{item.word}</Text>
+                    {phonetics[item.word] ? (
+                      <Text style={styles.phonetic}>{phonetics[item.word]}</Text>
+                    ) : null}
+                  </View>
                   <Pressable
                     onPress={() => playExampleSound(item.word)}
                     style={({ pressed }) => [{
@@ -93,7 +142,7 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
                     }]}
                     accessibilityLabel={t('vocabulary.sound') || 'Play sound'}
                   >
-                    <Text style={{ fontSize: 18, color: '#007AFF', fontWeight: 'bold' }}>🔊</Text>
+                    <Ionicons name="volume-medium" size={18} color="#007AFF" />
                   </Pressable>
                 </View>
                 {/* Removed Chinese language support */}
@@ -111,7 +160,7 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
                   }]}
                   accessibilityLabel={t('vocabulary.delete') || 'Delete'}
                 >
-                  <Text style={{ fontSize: 18, color: '#000', fontWeight: 'bold' }}>×</Text>
+                  <Ionicons name="close-circle-outline" size={20} color="#666666" />
                 </Pressable>
               </View>
               <Text style={styles.meta}>
@@ -182,6 +231,12 @@ const styles = StyleSheet.create({
     color: '#333333',
     fontSize: 16,
     fontWeight: '700'
+  },
+  phonetic: {
+    color: '#666666',
+    fontSize: 14,
+    fontStyle: 'italic',
+    marginTop: 2
   },
   meta: {
     marginTop: 6,

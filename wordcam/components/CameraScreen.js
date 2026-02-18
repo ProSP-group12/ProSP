@@ -2,6 +2,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useMemo, useRef, useState, useEffect } from 'react';
 import { Audio } from 'expo-av';
 import { ActivityIndicator, StyleSheet, Text, View, FlatList, Image, Pressable } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Card, SubTitle, Title } from './ui';
@@ -131,9 +132,11 @@ export function CameraScreen({ onAddVocabulary }) {
             }]}
             accessibilityLabel={facing === 'back' ? (t('camera.switchToFront') || 'Switch to Front Camera') : (t('camera.switchToBack') || 'Switch to Back Camera')}
           >
-            <Text style={{ fontSize: 22 }}>
-              {'\u21C4'}
-            </Text>
+            <Ionicons
+              name={facing === 'back' ? 'camera-reverse' : 'camera'}
+              size={20}
+              color="#FFD700"
+            />
           </Pressable>
         </View>
       </View>
