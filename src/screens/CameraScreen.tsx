@@ -1,22 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, LayoutChangeEvent } from 'react-native';
-import { Camera, useCameraDevices, useFrameProcessor } from 'react-native-vision-camera';
-import { runOnJS } from 'react-native-reanimated';
-import { detectObject } from 'vision-camera-object-detection';
+import { Camera, useCameraDevices } from 'react-native-vision-camera';
 import BoundingBoxOverlay from '../components/BoundingBoxOverlay';
-import { mapMLKitObjects, DetectedObject } from '../services/objectDetection';
-import { throttle } from '../utils/throttle';
+import { DetectedObject } from '../services/objectDetection';
 
 interface Props {
-  onCapture: (data: { photo: any; objects: DetectedObject[] }) => void;
+  onCapture: (data: {
+    photo: any;
+    photoPath: string;
+    objects: DetectedObject[];
+  }) => void;
 }
 
 const CameraScreen: React.FC<Props> = ({ onCapture }) => {
   const devices = useCameraDevices();
-  const device = devices.find(d => d.position === 'back');
+  // vision-camera v2: devices is an array; pick the back one
+  const device = devices.find((d) => d.position === 'back');
 
   const [hasPermission, setHasPermission] = useState(false);
-  const [objects, setObjects] = useState<DetectedObject[]>([]);
+
+  // Keep overlay pipeline intact, but we won't produce objects for now
+  const [objects] = useState<DetectedObject[]>([]);
   const [frameSize, setFrameSize] = useState({ width: 1, height: 1 });
   const [viewSize, setViewSize] = useState({ width: 1, height: 1 });
 
@@ -25,36 +29,31 @@ const CameraScreen: React.FC<Props> = ({ onCapture }) => {
   useEffect(() => {
     (async () => {
       const status = await Camera.requestCameraPermission();
-      // compatible with different vision-camera versions
+      // Some versions return 'authorized'|'denied', some return other strings
       setHasPermission(status !== 'denied');
     })();
   }, []);
 
-  const handleDetection = useRef(
-    throttle((mlkitObjs: any[], fW: number, fH: number) => {
-      const mapped = mapMLKitObjects(mlkitObjs);
-      setObjects(mapped);
-      setFrameSize({ width: fW, height: fH });
-    }, 300)
-  ).current;
-
-  const frameProcessor = useFrameProcessor((frame) => {
-    'worklet';
-    const detected = detectObject(frame);
-    // always pass an array to JS side (avoid type issues)
-    runOnJS(handleDetection)(detected ?? [], frame.width, frame.height);
-  }, [handleDetection]);
-
   const handleLayout = (e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout;
     setViewSize({ width, height });
+
+    // We don't have real frame size without frameProcessor.
+    // Set a reasonable default so overlay math doesn't divide by zero.
+    // (If your BoundingBoxOverlay already guards, this is still safe.)
+    if (frameSize.width === 1 && frameSize.height === 1) {
+      setFrameSize({ width, height });
+    }
   };
 
   const handleCapturePress = async () => {
-    if (!cameraRef.current) return;
-    const photo = await cameraRef.current.takePhoto(); // no extra options for compatibility
-    onCapture({ photo, objects });
-  };
+  if (!cameraRef.current) return;
+
+  const photo = await cameraRef.current.takePhoto();
+  const photoPath = photo.path;
+
+  onCapture({ photo, photoPath, objects });
+};
 
   if (device == null) return <Text>Loading camera...</Text>;
   if (!hasPermission) return <Text>Camera permission denied.</Text>;
@@ -66,7 +65,7 @@ const CameraScreen: React.FC<Props> = ({ onCapture }) => {
         style={StyleSheet.absoluteFill}
         device={device}
         isActive={true}
-        frameProcessor={frameProcessor}
+        photo={true}
       />
 
       <BoundingBoxOverlay

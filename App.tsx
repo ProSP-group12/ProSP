@@ -5,21 +5,30 @@ import { DetectedObject } from './src/services/objectDetection';
 
 export default function App() {
   const [capturedData, setCapturedData] = useState<{
-    photo: any;
-    objects: DetectedObject[];
-  } | null>(null);
+  photo: any;
+  photoPath: string;
+  objects: DetectedObject[];
+} | null>(null);
 
-  const handleCapture = (data: { photo: any; objects: DetectedObject[] }) => {
-    setCapturedData(data);
-  };
+  const handleCapture = (data: {
+  photo: any;
+  photoPath: string;
+  objects: DetectedObject[];
+}) => {
+  setCapturedData(data);
+};
 
   const handleBack = () => {
     setCapturedData(null);
   };
 
   return capturedData ? (
-    <ResultScreen objects={capturedData.objects} onBack={handleBack} />
-  ) : (
-    <CameraScreen onCapture={handleCapture} />
-  );
+  <ResultScreen
+    photoPath={capturedData.photoPath}
+    objects={capturedData.objects}
+    onBack={handleBack}
+  />
+) : (
+  <CameraScreen onCapture={handleCapture} />
+);
 }
