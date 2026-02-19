@@ -1,4 +1,4 @@
-//App.js
+// App.js
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useMemo, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
@@ -15,6 +15,9 @@ import { useTranslation } from 'react-i18next';
 import { CameraScreen } from './components/CameraScreen';
 import { VocabularyScreen } from './components/VocabularyScreen';
 import { SettingsScreen } from './components/SettingsScreen';
+
+// Corrected path to point into the components folder
+import { THEME_COLORS } from './components/ui';
 
 const STORAGE_KEY = '@wordcam:vocabulary';
 const Tab = createBottomTabNavigator();
@@ -51,14 +54,11 @@ export default function App() {
   }, [vocabulary]);
 
   useEffect(() => {
-    // Lock the app to portrait mode at runtime.
-    // We keep this soft (won't crash if unsupported).
     ScreenOrientation.lockAsync(
       ScreenOrientation.OrientationLock.PORTRAIT_UP
     ).catch(() => {});
 
     return () => {
-      // Best-effort unlock when leaving the app.
       ScreenOrientation.unlockAsync?.().catch?.(() => {});
     };
   }, []);
@@ -68,11 +68,11 @@ export default function App() {
       ...DefaultTheme,
       colors: {
         ...DefaultTheme.colors,
-        background: '#FFFFFF',
-        card: '#FFFFFF',
-        text: '#000000',
-        border: '#FFD700',
-        primary: '#FFD700',
+        background: THEME_COLORS.background,
+        card: THEME_COLORS.card,
+        text: THEME_COLORS.text,
+        border: THEME_COLORS.border,
+        primary: THEME_COLORS.primary,
       },
     }),
     []
@@ -83,11 +83,12 @@ export default function App() {
       <NavigationContainer theme={theme}>
         <Tab.Navigator
           screenOptions={{
-            headerStyle: { backgroundColor: theme.colors.card },
-            headerTintColor: theme.colors.text,
+            headerStyle: { backgroundColor: THEME_COLORS.card },
+            headerTintColor: THEME_COLORS.text,
+            headerTitleAlign: 'center',
             tabBarStyle: {
-              backgroundColor: theme.colors.card,
-              borderTopColor: theme.colors.border,
+              backgroundColor: THEME_COLORS.card,
+              borderTopColor: THEME_COLORS.border,
               height: Platform.select({ ios: 84, android: 76, default: 68 }),
               justifyContent: 'center',
             },
@@ -95,16 +96,8 @@ export default function App() {
               justifyContent: 'center',
               paddingVertical: 6,
             },
-            tabBarIconStyle: {
-              marginTop: 0,
-              marginBottom: 0,
-            },
-            tabBarLabelStyle: {
-              marginTop: 0,
-              marginBottom: 0,
-            },
-            tabBarActiveTintColor: theme.colors.primary,
-            tabBarInactiveTintColor: '#333333',
+            tabBarActiveTintColor: THEME_COLORS.primary,
+            tabBarInactiveTintColor: THEME_COLORS.tabInactive,
           }}
         >
           <Tab.Screen
@@ -165,6 +158,6 @@ export default function App() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: THEME_COLORS.background,
   },
 });

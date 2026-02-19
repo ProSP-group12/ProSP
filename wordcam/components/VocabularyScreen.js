@@ -200,7 +200,6 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete, onToggleFavori
                         justifyContent: 'center',
                         width: 32,
                         height: 32,
-                        // Removed marginLeft as it's no longer next to the sound button
                       }]}
                       accessibilityLabel="Toggle Favorite"
                     >
@@ -238,7 +237,7 @@ const styles = StyleSheet.create({
   },
   filterRow: {
     flexDirection: 'row',
-    marginBottom: 16,
+    marginBottom: 10,
     backgroundColor: '#EAEAEA',
     borderRadius: 8,
     padding: 4,
@@ -283,7 +282,7 @@ const styles = StyleSheet.create({
   },
 
   cardWrapper: {
-    marginBottom: 16,
+    marginBottom: 8,
     marginTop: 6,
     paddingLeft: 4, 
     marginHorizontal: 7,
