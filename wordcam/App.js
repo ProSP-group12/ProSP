@@ -87,8 +87,20 @@ export default function App() {
             tabBarStyle: {
               backgroundColor: theme.colors.card,
               borderTopColor: theme.colors.border,
-              height: Platform.select({ ios: 84, android: 68, default: 68 }),
-              paddingBottom: Platform.select({ ios: 24, default: 10 }),
+              height: Platform.select({ ios: 84, android: 76, default: 68 }),
+              justifyContent: 'center',
+            },
+            tabBarItemStyle: {
+              justifyContent: 'center',
+              paddingVertical: 6,
+            },
+            tabBarIconStyle: {
+              marginTop: 0,
+              marginBottom: 0,
+            },
+            tabBarLabelStyle: {
+              marginTop: 0,
+              marginBottom: 0,
             },
             tabBarActiveTintColor: theme.colors.primary,
             tabBarInactiveTintColor: '#333333',
