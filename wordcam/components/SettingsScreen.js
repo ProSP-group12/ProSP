@@ -1,3 +1,4 @@
+//SettingsScreen.js
 import { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';

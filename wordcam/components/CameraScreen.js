@@ -1,3 +1,4 @@
+//CameraScreen.js
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useRef, useState, useEffect } from 'react';
 import { Audio } from 'expo-av';

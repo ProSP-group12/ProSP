@@ -1,5 +1,7 @@
+//ui.js
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+// Reusable Button component
 export function Button({ title, onPress, disabled, variant = 'primary' }) {
   return (
     <Pressable
@@ -24,25 +26,33 @@ export function Button({ title, onPress, disabled, variant = 'primary' }) {
   );
 }
 
+// Reusable Card container
 export function Card({ children, style }) {
   return <View style={[styles.card, style]}>{children}</View>;
 }
 
+// Reusable Title text component
 export function Title({ children, style }) {
   return <Text style={[styles.title, style]}>{children}</Text>;
 }
 
+// Reusable SubTitle text component
 export function SubTitle({ children, style }) {
   return <Text style={[styles.subtitle, style]}>{children}</Text>;
 }
 
+// Styles specifically for UI components
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
-    borderColor: '#FFD700',
-    borderWidth: 1,
     borderRadius: 16,
     padding: 16,
+    // Removed borders and added a soft shadow for a modern look
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 3,
   },
   title: {
     color: '#000000',
@@ -87,4 +97,3 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
 });
-

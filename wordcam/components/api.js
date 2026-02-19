@@ -1,3 +1,4 @@
+//api.js - handles image analysis, either via remote API or local heuristics.
 import Constants from 'expo-constants';
 import * as FileSystem from 'expo-file-system/legacy';
 import { Image } from 'react-native';

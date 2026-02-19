@@ -1,3 +1,4 @@
+//App.js
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useMemo, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
@@ -137,6 +138,9 @@ export default function App() {
                 vocabulary={vocabulary}
                 onClear={() => setVocabulary([])}
                 onDelete={(id) => setVocabulary((prev) => prev.filter((v) => v.id !== id))}
+                onToggleFavorite={(id) => setVocabulary((prev) => 
+                  prev.map((v) => v.id === id ? { ...v, isFavorite: !v.isFavorite } : v)
+                )}
               />
             )}
           </Tab.Screen>
