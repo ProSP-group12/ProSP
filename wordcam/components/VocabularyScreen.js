@@ -4,15 +4,17 @@ import {
   FlatList,
   StyleSheet,
   Text,
-  View
+  View,
+  Pressable,
+  Image
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
+// Import UI components from the separate ui.js file
 import { Button, Card, Title } from './ui';
-import { Pressable } from 'react-native';
-import { Image } from 'react-native';
 
+// Format timestamp to local string
 function formatDate(ts) {
   try {
     return new Date(ts).toLocaleString();
@@ -28,7 +30,6 @@ async function fetchPhonetic(word) {
     if (!response.ok) return null;
     const data = await response.json();
     if (Array.isArray(data) && data.length > 0) {
-      // Try phonetic field first, then phonetics array
       const entry = data[0];
       if (entry.phonetic) return entry.phonetic;
       if (entry.phonetics && Array.isArray(entry.phonetics) && entry.phonetics.length > 0) {
@@ -44,8 +45,6 @@ async function fetchPhonetic(word) {
 
 export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
   const { i18n, t } = useTranslation();
-
-  // Removed Chinese language support
 
   const data = useMemo(() => vocabulary ?? [], [vocabulary]);
   
@@ -74,8 +73,6 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
   // Play example sound for a word
   const playExampleSound = async (word) => {
     try {
-      // Use Google Translate TTS as an example (for demo, not for production)
-      // Use the current language for TTS
       const lang = i18n.language === 'zh' ? 'zh-CN' : 'en';
       const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(word)}&tl=${lang}&client=tw-ob`;
       const { sound } = await Audio.Sound.createAsync({ uri: url });
@@ -86,7 +83,7 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
         }
       });
     } catch (e) {
-      // Ignore errors for now
+      // Ignore audio errors silently
     }
   };
 
@@ -128,6 +125,8 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
                       <Text style={styles.phonetic}>{phonetics[item.word]}</Text>
                     ) : null}
                   </View>
+                  
+                  {/* Play Sound Button */}
                   <Pressable
                     onPress={() => playExampleSound(item.word)}
                     style={({ pressed }) => [{
@@ -145,7 +144,8 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
                     <Ionicons name="volume-medium" size={18} color="#007AFF" />
                   </Pressable>
                 </View>
-                {/* Removed Chinese language support */}
+                
+                {/* Delete Button */}
                 <Pressable
                   onPress={() => onDelete?.(item.id)}
                   style={({ pressed }) => [{
@@ -160,7 +160,7 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
                   }]}
                   accessibilityLabel={t('vocabulary.delete') || 'Delete'}
                 >
-                  <Ionicons name="close-circle-outline" size={20} color="#666666" />
+                  <Ionicons name="close-circle-outline" size={24} color="#FF3B30" />
                 </Pressable>
               </View>
               <Text style={styles.meta}>
@@ -177,6 +177,7 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete }) {
   );
 }
 
+// Styles specifically for VocabularyScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -203,19 +204,20 @@ const styles = StyleSheet.create({
   },
   itemTop: {
     flexDirection: 'row',
-    alignItems: 'baseline',
+    alignItems: 'center', // Changed from baseline to center
     justifyContent: 'space-between',
     gap: 12
   },
   wordRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12
+    gap: 12,
+    flex: 1 // Allow word row to take available space pushing delete button to the right
   },
   word: {
-    color: '#000000',
-    fontSize: 20,
-    fontWeight: '800'
+    color: '#333333',
+    fontSize: 16,
+    fontWeight: '700'
   },
   sticker: {
     width: 56,
@@ -225,12 +227,6 @@ const styles = StyleSheet.create({
     borderColor: '#FFFFFF',
     backgroundColor: '#FFFFFF',
     overflow: 'hidden'
-  },
-  // Removed Chinese language support
-  word: {
-    color: '#333333',
-    fontSize: 16,
-    fontWeight: '700'
   },
   phonetic: {
     color: '#666666',
@@ -245,4 +241,3 @@ const styles = StyleSheet.create({
     fontWeight: '600'
   }
 });
-
