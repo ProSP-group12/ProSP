@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+// Import useTheme to access global color variables
+import { useTheme } from '@react-navigation/native';
 
 // Import UI components from the separate ui.js file
 import { Button, Card, Title } from './ui';
@@ -47,6 +49,8 @@ async function fetchPhonetic(word) {
 // Added onToggleFavorite prop
 export function VocabularyScreen({ vocabulary, onClear, onDelete, onToggleFavorite }) {
   const { i18n, t } = useTranslation();
+  // Extract global theme color variables
+  const { colors } = useTheme();
 
   const data = useMemo(() => vocabulary ?? [], [vocabulary]);
   
@@ -137,7 +141,6 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete, onToggleFavori
             <View style={styles.cardWrapper}>
               <Card style={styles.itemCard}>
                 
-                {/* Delete Button positioned absolutely on the top-left edge */}
                 <Pressable
                   onPress={() => onDelete?.(item.id)}
                   style={({ pressed }) => [
@@ -158,49 +161,54 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete, onToggleFavori
                         resizeMode="cover"
                       />
                     ) : null}
+                    
                     <View style={styles.textContainer}>
-                      <Text style={styles.word}>{item.word}</Text>
+                      
+                      <View style={styles.wordAndSoundRow}>
+                        <Text style={styles.word}>{item.word}</Text>
+                        
+                        <Pressable
+                          onPress={() => playExampleSound(item.word)}
+                          style={({ pressed }) => [{
+                            padding: 6,
+                            borderRadius: 16,
+                            backgroundColor: pressed ? `${colors.primary}33` : `${colors.primary}1A`,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: 32,
+                            height: 32,
+                          }]}
+                          accessibilityLabel={t('vocabulary.sound') || 'Play sound'}
+                        >
+                          <Ionicons name="volume-medium" size={18} color={colors.primary} />
+                        </Pressable>
+                      </View>
+
                       {phonetics[item.word] ? (
                         <Text style={styles.phonetic}>{phonetics[item.word]}</Text>
                       ) : null}
                     </View>
                     
-                    {/* Play Sound Button */}
-                    <Pressable
-                      onPress={() => playExampleSound(item.word)}
-                      style={({ pressed }) => [{
-                        padding: 6,
-                        borderRadius: 16,
-                        backgroundColor: pressed ? '#cce5ff' : '#e6f2ff',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: 32,
-                        height: 32,
-                      }]}
-                      accessibilityLabel={t('vocabulary.sound') || 'Play sound'}
-                    >
-                      <Ionicons name="volume-medium" size={18} color="#007AFF" />
-                    </Pressable>
-
-                    {/* Favorite Button */}
                     <Pressable
                       onPress={() => onToggleFavorite?.(item.id)}
                       style={({ pressed }) => [{
                         padding: 6,
                         borderRadius: 16,
-                        backgroundColor: pressed ? '#FFF5CC' : 'transparent',
+                        // Provide simple gray feedback background
+                        backgroundColor: pressed ? '#F0F0F0' : 'transparent',
                         alignItems: 'center',
                         justifyContent: 'center',
                         width: 32,
                         height: 32,
-                        marginLeft: 4, // slight gap from sound button
+                        // Removed marginLeft as it's no longer next to the sound button
                       }]}
                       accessibilityLabel="Toggle Favorite"
                     >
                       <Ionicons 
                         name={item.isFavorite ? "star" : "star-outline"} 
                         size={20} 
-                        color={item.isFavorite ? "#FFD700" : "#CCCCCC"} 
+                        // Use theme variable for the active star color only
+                        color={item.isFavorite ? colors.primary : "#CCCCCC"} 
                       />
                     </Pressable>
 
@@ -225,14 +233,13 @@ export function VocabularyScreen({ vocabulary, onClear, onDelete, onToggleFavori
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F5F5F5',
     padding: 16
   },
-  // Styles for the new filter bar
   filterRow: {
     flexDirection: 'row',
     marginBottom: 16,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#EAEAEA',
     borderRadius: 8,
     padding: 4,
   },
@@ -243,7 +250,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   filterTabActive: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFFFFF', 
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -258,7 +265,7 @@ const styles = StyleSheet.create({
   filterTextActive: {
     color: '#333333',
   },
-  // ---------------------------------
+
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -274,7 +281,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600'
   },
-  // Wrapper to safely contain the absolute positioned button
+
   cardWrapper: {
     marginBottom: 16,
     marginTop: 6,
@@ -283,6 +290,7 @@ const styles = StyleSheet.create({
   },
   itemCard: {
     position: 'relative',
+    backgroundColor: '#FFFFFF', 
   },
   deleteButton: {
     position: 'absolute',
@@ -297,7 +305,6 @@ const styles = StyleSheet.create({
     zIndex: 10,
     borderWidth: 1,
     borderColor: '#E0E0E0',
-    // Slight shadow to separate the button from the card underneath
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -321,6 +328,12 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
   },
+
+  wordAndSoundRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   word: {
     color: '#333333',
     fontSize: 18,
@@ -330,7 +343,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 8,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#FFFFFF',
     overflow: 'hidden'
   },
   phonetic: {

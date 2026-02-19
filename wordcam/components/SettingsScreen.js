@@ -3,61 +3,53 @@ import { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Card, SubTitle, Title } from './ui';
+// Removed Title from the import list
+import { Button, Card } from './ui';
 
 export function SettingsScreen() {
   const { i18n, t } = useTranslation();
 
-  // Support for Chinese language
+  // Support for language translations
   const current = useMemo(() => {
     const code = i18n.language;
-    if (code === 'zh') return t('settings.chinese');
-    if (code === 'fi') return t('settings.finnish');
-    return t('settings.english');
+    if (code === 'zh') return t('settings.chinese') || 'Chinese';
+    if (code === 'fi') return t('settings.finnish') || 'Finnish';
+    return t('settings.english') || 'English';
   }, [i18n.language, t]);
 
   async function setLanguage(next) {
     try {
       await i18n.changeLanguage(next);
     } catch {
-      // ignore for prototype
+      // Ignore for prototype
     }
   }
 
   return (
     <View style={styles.container}>
-      <Card>
-        <Title>{t('settings.title')}</Title>
-
-        <View style={{ height: 18 }} />
-
-        <Text style={styles.label}>{t('settings.language')}</Text>
+      <Card style={styles.cardLayout}>
+        
+        <Text style={styles.label}>{t('settings.language') || 'CURRENT LANGUAGE'}</Text>
         <Text style={styles.value}>{current}</Text>
 
-        <View style={{ height: 12 }} />
+        <View style={{ height: 24 }} />
 
-        <View style={styles.row}>
-          <View style={{ flex: 1 }}>
-            <Button
-              title={t('settings.english')}
-              onPress={() => setLanguage('en')}
-              variant={i18n.language === 'en' ? 'primary' : 'secondary'}
-            />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Button
-              title={t('settings.chinese')}
-              onPress={() => setLanguage('zh')}
-              variant={i18n.language === 'zh' ? 'primary' : 'secondary'}
-            />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Button
-              title={t('settings.finnish')}
-              onPress={() => setLanguage('fi')}
-              variant={i18n.language === 'fi' ? 'primary' : 'secondary'}
-            />
-          </View>
+        <View style={styles.buttonGroup}>
+          <Button
+            title={t('settings.english') || 'English'}
+            onPress={() => setLanguage('en')}
+            variant={i18n.language === 'en' ? 'primary' : 'secondary'}
+          />
+          <Button
+            title={t('settings.chinese') || '中文'}
+            onPress={() => setLanguage('zh')}
+            variant={i18n.language === 'zh' ? 'primary' : 'secondary'}
+          />
+          <Button
+            title={t('settings.finnish') || 'Suomi'}
+            onPress={() => setLanguage('fi')}
+            variant={i18n.language === 'fi' ? 'primary' : 'secondary'}
+          />
         </View>
       </Card>
     </View>
@@ -67,24 +59,28 @@ export function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    padding: 16
+    backgroundColor: '#F5F5F5',
+    padding: 16,
+  },
+  cardLayout: {
+    paddingVertical: 24,
+    paddingHorizontal: 20
   },
   label: {
-    color: '#333333',
+    color: '#888888',
     fontSize: 12,
-    fontWeight: '800',
-    textTransform: 'uppercase'
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 1
   },
   value: {
-    color: '#000000',
-    fontSize: 18,
+    color: '#333333',
+    fontSize: 22,
     fontWeight: '800',
     marginTop: 6
   },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center'
+  buttonGroup: {
+    flexDirection: 'column',
+    gap: 14
   }
 });
-
