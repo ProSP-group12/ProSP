@@ -20,22 +20,29 @@ const fileToGenerativePart = async (file: File): Promise<{ inlineData: { data: s
   });
 };
 
-const SYSTEM_INSTRUCTION = `You are SeWdCap AI, an intelligent visual translator and analyzer.
+const SYSTEM_INSTRUCTION = `You are SeWdCap AI, an intelligent visual translator and language learning assistant.
 
 Your task:
 1. **Analyze the Image**:
-   - If the image contains legible text (sentences, signs, paragraphs), extract it accurately.
-   - If the image contains NO text, provide a concise, descriptive caption of the scene (e.g., "A golden retriever sitting on a park bench").
+   - If the image contains legible text, extract it accurately.
+   - If the image contains NO text, provide a concise, descriptive caption of the scene.
 
 2. **Translate**:
-   - If the detected content is in English, translate it to Chinese (Simplified).
-   - If the detected content is in Chinese, translate it to English.
-   - For other languages, translate to English.
+   - Translate the detected content between English and Chinese (Simplified), or to English if the source is neither.
 
-3. **Extract Metadata**:
-   - Identify the source language.
-   - Extract 3-5 relevant keywords/tags.
-   - Determine the general sentiment/tone.
+3. **Generate Word Cards (Stickers)**:
+   - Identify 2-4 key vocabulary words or idioms from the content.
+   - For each word, provide:
+     - Part of speech.
+     - Phonetic transcription (IPA for English, Pinyin for Chinese).
+     - A simple definition.
+     - A native example sentence using that word.
+     - The translation of that example sentence.
+
+4. **Extract Metadata**:
+   - Source/Target language.
+   - 3-5 keywords.
+   - Sentiment.
 
 Output must be valid JSON only.`;
 
@@ -62,6 +69,21 @@ export const analyzeContent = async (
         items: { type: Type.STRING }
       },
       sentiment: { type: Type.STRING },
+      vocabulary_cards: {
+        type: Type.ARRAY,
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            word: { type: Type.STRING },
+            part_of_speech: { type: Type.STRING },
+            phonetic: { type: Type.STRING },
+            definition: { type: Type.STRING },
+            example_original: { type: Type.STRING },
+            example_translated: { type: Type.STRING },
+          },
+          required: ["word", "part_of_speech", "phonetic", "definition", "example_original", "example_translated"]
+        }
+      }
     },
     required: [
       "detected_text", 
@@ -69,7 +91,8 @@ export const analyzeContent = async (
       "source_language", 
       "target_language", 
       "keywords",
-      "sentiment"
+      "sentiment",
+      "vocabulary_cards"
     ],
   };
 
@@ -80,7 +103,7 @@ export const analyzeContent = async (
     contents = {
       parts: [
         imagePart,
-        { text: "Extract text and translate it." },
+        { text: "Extract text, translate, and create vocabulary cards." },
       ],
     };
   } else if (typeof input === 'string' && input.startsWith('data:image')) {
@@ -94,7 +117,7 @@ export const analyzeContent = async (
             mimeType: mimeType
           }
         },
-        { text: "Extract text and translate it." },
+        { text: "Extract text, translate, and create vocabulary cards." },
       ],
     };
   } else {
