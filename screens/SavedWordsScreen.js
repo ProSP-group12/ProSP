@@ -5,19 +5,44 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function SavedWordsScreen() {
+export default function SavedWordsScreen({ navigation }) {
   const [savedWords, setSavedWords] = useState([]);
 
   useEffect(() => {
-    loadWords();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadWords();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const loadWords = async () => {
     const data = await AsyncStorage.getItem('savedWords');
     if (data) setSavedWords(JSON.parse(data));
+    else setSavedWords([]);
+  };
+
+  const deleteWord = (index) => {
+    Alert.alert(
+      'Delete Word',
+      'Are you sure you want to delete this word?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            const updated = [...savedWords];
+            updated.splice(index, 1);
+            setSavedWords(updated);
+            await AsyncStorage.setItem('savedWords', JSON.stringify(updated));
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -27,13 +52,30 @@ export default function SavedWordsScreen() {
       <FlatList
         data={savedWords}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.word}>{item.text}</Text>
-            <Text style={styles.definition}>
-              {item.definitions[0]?.definition}
-            </Text>
-          </View>
+        renderItem={({ item, index }) => (
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => navigation.navigate('WordDetails', { word: item })}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <View>
+                <Text style={styles.word}>{item.text}</Text>
+                <Text style={styles.definition}>
+                  {item.definitions[0]?.definition}
+                </Text>
+              </View>
+
+              <TouchableOpacity onPress={() => deleteWord(index)}>
+                <Text style={styles.deleteButton}>🗑️</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
         )}
       />
     </View>
@@ -62,5 +104,9 @@ const styles = StyleSheet.create({
   definition: {
     color: '#aaa',
     marginTop: 5,
+  },
+  deleteButton: {
+    fontSize: 20,
+    color: 'red',
   },
 });

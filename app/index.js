@@ -1,18 +1,33 @@
+import React from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import MainScreen from '../screens/MainScreen';
-import SavedWordsScreen from '../screens/SavedWordsScreen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// const Stack = createNativeStackNavigator();
+import MainScreen from '../screens/MainScreen.js';
+import SavedWordsScreen from '../screens/SavedWordsScreen.js';
+import WordDetailsScreen from '../screens/WordDetailsScreen.js';
+
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
+// Stack for Saved Words → Word Details
+function SavedStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="SavedWords" component={SavedWordsScreen} />
+      <Stack.Screen name="WordDetails" component={WordDetailsScreen} />
+    </Stack.Navigator>
+  );
+}
+
+// Main App with Tabs
 export default function Main() {
   return (
     <Tab.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: '#000' },
-        headerTintColor: '#fff',
+        // headerStyle: { backgroundColor: '#000' },
+        // headerTintColor: '#fff',
+        headerShown: false,
         tabBarStyle: { backgroundColor: '#000' },
         tabBarActiveTintColor: 'white',
       }}
@@ -26,12 +41,10 @@ export default function Main() {
           ),
         }}
       />
-
       <Tab.Screen
         name="Saved"
-        component={SavedWordsScreen}
+        component={SavedStack} // <-- use the stack here
         options={{
-          title: "Saved Words",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="bookmark" color={color} size={size} />
           ),
@@ -40,4 +53,3 @@ export default function Main() {
     </Tab.Navigator>
   );
 }
-
