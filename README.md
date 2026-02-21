@@ -1,50 +1,61 @@
-# Welcome to your Expo app 👋
+# 📷 WordCap
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+WordCap is a **mobile-first vocabulary learning app** built with **React Native**.  
+It helps users learn English vocabulary by recognizing real-world objects using their phone camera.
 
-## Get started
+---
 
-1. Install dependencies
+## ✨ Features
 
-   ```bash
-   npm install
-   ```
+- 📸 Camera-based object recognition  
+- 📝 Save recognized words for later review  
+- 📱 Clean, mobile-friendly UI  
+- 🌍 Learn vocabulary from everyday life  
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## 🛠️ Tech Stack
 
-In the output, you'll find options to open the app in a
+- **React Native** – Cross-platform mobile app  
+- **Expo** – Development and build tools  
+- **expo-camera** – Camera functionality  
+- **AsyncStorage** – Local storage for saved words  
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 🚀 Getting Started
 
-## Get a fresh project
+### Prerequisites
 
-When you're ready, run:
+- **Node.js** (v14 or higher)  
+- **npm** (comes with Node.js)  
+- **Expo CLI** (optional) or use `npx expo`  
+
+### Installation
+
+1. Clone the repository:
 
 ```bash
-npm run reset-project
+git clone <your-repo-url>
+cd wordcap
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Install dependencies:
 
-## Learn more
+```
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+3. Create a .env file in the project root and add your Google Vision API Key:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```
+GOOGLE_API_KEY=your_api_key_here
+```
 
-## Join the community
+4. Start the Expo development server:
 
-Join our community of developers creating universal apps.
+```
+npx expo start
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+5. Open the app on your phone using Expo Go or an emulator.
