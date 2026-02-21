@@ -1,4 +1,3 @@
-import React from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -10,7 +9,6 @@ import WordDetailsScreen from '../screens/WordDetailsScreen.js';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-// Stack for Saved Words → Word Details
 function SavedStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -25,13 +23,17 @@ export default function Main() {
   return (
     <Tab.Navigator
       screenOptions={{
-        // headerStyle: { backgroundColor: '#000' },
-        // headerTintColor: '#fff',
         headerShown: false,
-        tabBarStyle: { backgroundColor: '#000' },
+        tabBarStyle: {
+          backgroundColor: '#000',
+          height: 60, 
+          borderTopWidth: 0, 
+        },
         tabBarActiveTintColor: 'white',
+        tabBarInactiveTintColor: '#555',
       }}
     >
+
       <Tab.Screen
         name="Camera"
         component={MainScreen}
@@ -43,7 +45,7 @@ export default function Main() {
       />
       <Tab.Screen
         name="Saved"
-        component={SavedStack} // <-- use the stack here
+        component={SavedStack} 
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="bookmark" color={color} size={size} />

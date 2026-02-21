@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
+const ACCENT = '#6D5DD3';
+
 export default function WordCard({ word, onClose, onSave }) {
   if (!word) return null;
 
@@ -15,7 +17,10 @@ export default function WordCard({ word, onClose, onSave }) {
     <View style={styles.container}>
       <View style={styles.handle} />
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 120 }}
+      >
         <Text style={styles.word}>{word.text}</Text>
 
         {word.phonetic ? (
@@ -34,20 +39,19 @@ export default function WordCard({ word, onClose, onSave }) {
 
             {def.example && (
               <Text style={styles.example}>
-                Example: "{def.example}"
+                “{def.example}”
               </Text>
             )}
 
             {def.synonyms.length > 0 && (
               <Text style={styles.synonyms}>
-                Synonyms: {def.synonyms.slice(0, 5).join(', ')}
+                {def.synonyms.slice(0, 5).join(', ')}
               </Text>
             )}
           </View>
         ))}
       </ScrollView>
 
-      {/* Buttons */}
       <View style={styles.bottomButtons}>
         <TouchableOpacity style={styles.saveButton} onPress={onSave}>
           <MaterialIcons name="bookmark" size={20} color="white" />
@@ -55,7 +59,7 @@ export default function WordCard({ word, onClose, onSave }) {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={onClose}>
-          <MaterialIcons name="close" size={24} color="white" />
+          <MaterialIcons name="close" size={24} color="#aaa" />
         </TouchableOpacity>
       </View>
     </View>
@@ -67,72 +71,75 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    height: '60%',
-    backgroundColor: '#121212',
-    padding: 20,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
+    height: '65%',
+    backgroundColor: '#16161D',
+    paddingHorizontal: 24,
+    paddingTop: 15,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
   },
   handle: {
     width: 50,
     height: 5,
-    backgroundColor: '#444',
+    backgroundColor: '#2A2A33',
     borderRadius: 5,
     alignSelf: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   word: {
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontSize: 32,
+    fontWeight: '700',
     color: 'white',
   },
   phonetic: {
     fontSize: 18,
-    color: '#aaa',
-    marginTop: 4,
+    color: '#A1A1AA',
+    marginTop: 6,
   },
   partOfSpeech: {
-    fontSize: 16,
+    fontSize: 15,
     fontStyle: 'italic',
-    color: '#6ab7ff',
+    color: ACCENT,
     marginTop: 8,
   },
   definitionBlock: {
-    marginTop: 15,
+    marginTop: 20,
   },
   definition: {
     fontSize: 16,
     color: 'white',
+    lineHeight: 22,
   },
   example: {
     fontSize: 14,
-    color: '#bbb',
+    color: '#A1A1AA',
     fontStyle: 'italic',
-    marginTop: 6,
+    marginTop: 8,
   },
   synonyms: {
     fontSize: 14,
-    color: '#4caf50',
-    marginTop: 6,
+    color: ACCENT,
+    marginTop: 8,
   },
   bottomButtons: {
     position: 'absolute',
-    bottom: 20,
-    right: 20,
+    bottom: 25,
+    right: 25,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 15,
+    gap: 20,
   },
   saveButton: {
     flexDirection: 'row',
-    backgroundColor: '#4caf50',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
+    backgroundColor: ACCENT,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 25,
     alignItems: 'center',
   },
   saveText: {
     color: 'white',
-    marginLeft: 5,
+    marginLeft: 6,
+    fontWeight: '600',
   },
 });
