@@ -160,7 +160,7 @@ export default function MainScreen() {
 
       {/* Top Bar */}
       <View style={styles.topBar}>
-        <Text style={styles.appTitle}>WordCap</Text>
+        <Text style={styles.appTitle}>WordCam</Text>
         <TouchableOpacity onPress={toggleCameraFacing}>
           <MaterialIcons name="flip-camera-ios" size={28} color="white" />
         </TouchableOpacity>

@@ -1,6 +1,6 @@
-# 📷 WordCap
+# 📷 WordCam
 
-WordCap is a **mobile-first vocabulary learning app** built with **React Native**.  
+WordCam is a **mobile-first vocabulary learning app** built with **React Native**.  
 It helps users learn English vocabulary by recognizing real-world objects using their phone camera.
 
 ---
